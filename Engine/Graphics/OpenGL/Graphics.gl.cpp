@@ -10,6 +10,8 @@
 #include "../cShader.h"
 #include "../sContext.h"
 #include "../VertexFormats.h"
+#include "../cMesh.h"
+#include "../cEffect.h"
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Concurrency/cEvent.h>
@@ -60,18 +62,22 @@ namespace
 	//--------------
 
 	// A vertex buffer holds the data for each vertex
-	GLuint s_vertexBufferId = 0;
+	//GLuint s_vertexBufferId = 0;
 	// A vertex array encapsulates the vertex data as well as the vertex input layout
-	GLuint s_vertexArrayId = 0;
+	//GLuint s_vertexArrayId = 0;
+
+	eae6320::Graphics::cMesh s_mesh;
 
 	// Shading Data
 	//-------------
 
-	eae6320::Graphics::cShader* s_vertexShader = nullptr;
+	/*eae6320::Graphics::cShader* s_vertexShader = nullptr;
 	eae6320::Graphics::cShader* s_fragmentShader = nullptr;
 	GLuint s_programId = 0;
 
-	eae6320::Graphics::cRenderState s_renderState;
+	eae6320::Graphics::cRenderState s_renderState;*/
+
+	eae6320::Graphics::cEffect s_effect;
 }
 
 // Helper Declarations
@@ -79,8 +85,8 @@ namespace
 
 namespace
 {
-	eae6320::cResult InitializeGeometry();
-	eae6320::cResult InitializeShadingData();
+	//eae6320::cResult InitializeGeometry();
+	//eae6320::cResult InitializeShadingData();
 }
 
 // Interface
@@ -181,43 +187,46 @@ void eae6320::Graphics::RenderFrame()
 		s_constantBuffer_frame.Update( &constantData_frame );
 	}
 
-	// Bind the shading data
-	{
-		{
-			EAE6320_ASSERT( s_programId != 0 );
-			glUseProgram( s_programId );
-			EAE6320_ASSERT( glGetError() == GL_NO_ERROR );
-		}
-		// Render state
-		{
-			s_renderState.Bind();
-		}
-	}
+	//// Bind the shading data
+	//{
+	//	{
+	//		EAE6320_ASSERT( s_programId != 0 );
+	//		glUseProgram( s_programId );
+	//		EAE6320_ASSERT( glGetError() == GL_NO_ERROR );
+	//	}
+	//	// Render state
+	//	{
+	//		s_renderState.Bind();
+	//	}
+	//}
+	s_effect.BindShadingData();
+	
 	// Draw the geometry
-	{
-		// Bind a specific vertex buffer to the device as a data source
-		{
-			EAE6320_ASSERT( s_vertexArrayId != 0 );
-			glBindVertexArray( s_vertexArrayId );
-			EAE6320_ASSERT( glGetError() == GL_NO_ERROR );
-		}
-		// Render triangles from the currently-bound vertex buffer
-		{
-			// The mode defines how to interpret multiple vertices as a single "primitive";
-			// a triangle list is defined
-			// (meaning that every primitive is a triangle and will be defined by three vertices)
-			constexpr GLenum mode = GL_TRIANGLES;
-			// As of this comment only a single triangle is drawn
-			// (you will have to update this code in future assignments!)
-			constexpr unsigned int triangleCount = 1;
-			constexpr unsigned int vertexCountPerTriangle = 3;
-			constexpr auto vertexCountToRender = triangleCount * vertexCountPerTriangle;
-			// It's possible to start rendering primitives in the middle of the stream
-			constexpr unsigned int indexOfFirstVertexToRender = 0;
-			glDrawArrays( mode, indexOfFirstVertexToRender, vertexCountToRender );
-			EAE6320_ASSERT( glGetError() == GL_NO_ERROR );
-		}
-	}
+	//{
+	//	// Bind a specific vertex buffer to the device as a data source
+	//	{
+	//		EAE6320_ASSERT( s_vertexArrayId != 0 );
+	//		glBindVertexArray( s_vertexArrayId );
+	//		EAE6320_ASSERT( glGetError() == GL_NO_ERROR );
+	//	}
+	//	// Render triangles from the currently-bound vertex buffer
+	//	{
+	//		// The mode defines how to interpret multiple vertices as a single "primitive";
+	//		// a triangle list is defined
+	//		// (meaning that every primitive is a triangle and will be defined by three vertices)
+	//		constexpr GLenum mode = GL_TRIANGLES;
+	//		// As of this comment only a single triangle is drawn
+	//		// (you will have to update this code in future assignments!)
+	//		constexpr unsigned int triangleCount = 1;
+	//		constexpr unsigned int vertexCountPerTriangle = 3;
+	//		constexpr auto vertexCountToRender = triangleCount * vertexCountPerTriangle;
+	//		// It's possible to start rendering primitives in the middle of the stream
+	//		constexpr unsigned int indexOfFirstVertexToRender = 0;
+	//		glDrawArrays( mode, indexOfFirstVertexToRender, vertexCountToRender );
+	//		EAE6320_ASSERT( glGetError() == GL_NO_ERROR );
+	//	}
+	//}
+	s_mesh.DrawGeometry();
 
 	// Everything has been drawn to the "back buffer", which is just an image in memory.
 	// In order to display it the contents of the back buffer must be "presented"
@@ -283,7 +292,7 @@ eae6320::cResult eae6320::Graphics::Initialize( const sInitializationParameters&
 	}
 	// Initialize the shading data
 	{
-		if ( !( result = InitializeShadingData() ) )
+		if ( !( result = s_effect.InitializeShadingData() ) )
 		{
 			EAE6320_ASSERTF( false, "Can't initialize Graphics without the shading data" );
 			return result;
@@ -291,7 +300,37 @@ eae6320::cResult eae6320::Graphics::Initialize( const sInitializationParameters&
 	}
 	// Initialize the geometry
 	{
-		if ( !( result = InitializeGeometry() ) )
+		//Data input is temporarily hardcoded...
+		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[6];
+		{
+		// OpenGL is right-handed
+
+			vertexData[0].x = 0.0f;
+			vertexData[0].y = 0.0f;
+			vertexData[0].z = 0.0f;
+
+			vertexData[1].x = 1.0f;
+			vertexData[1].y = 0.0f;
+			vertexData[1].z = 0.0f;
+
+			vertexData[2].x = 1.0f;
+			vertexData[2].y = 1.0f;
+			vertexData[2].z = 0.0f;
+
+			vertexData[3].x = 0.0f;
+			vertexData[3].y = 0.0f;
+			vertexData[3].z = 0.0f;
+
+			vertexData[4].x = 1.0f;
+			vertexData[4].y = 1.0f;
+			vertexData[4].z = 0.0f;
+
+			vertexData[5].x = 0.0f;
+			vertexData[5].y = 1.0f;
+			vertexData[5].z = 0.0f;
+		}
+
+		if ( !( result = s_mesh.InitializeGeometry(vertexData) ) )
 		{
 			EAE6320_ASSERTF( false, "Can't initialize Graphics without the geometry data" );
 			return result;
@@ -305,59 +344,61 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 {
 	auto result = Results::Success;
 
-	{
-		if ( s_vertexArrayId != 0 )
-		{
-			// Make sure that the vertex array isn't bound
-			{
-				// Unbind the vertex array
-				glBindVertexArray( 0 );
-				const auto errorCode = glGetError();
-				if ( errorCode != GL_NO_ERROR )
-				{
-					if ( result )
-					{
-						result = Results::Failure;
-					}
-					EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					Logging::OutputError( "OpenGL failed to unbind all vertex arrays before cleaning up geometry: %s",
-						reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				}
-			}
-			constexpr GLsizei arrayCount = 1;
-			glDeleteVertexArrays( arrayCount, &s_vertexArrayId );
-			const auto errorCode = glGetError();
-			if ( errorCode != GL_NO_ERROR )
-			{
-				if ( result )
-				{
-					result = Results::Failure;
-				}
-				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				Logging::OutputError( "OpenGL failed to delete the vertex array: %s",
-					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-			}
-			s_vertexArrayId = 0;
-		}
-		if ( s_vertexBufferId != 0 )
-		{
-			constexpr GLsizei bufferCount = 1;
-			glDeleteBuffers( bufferCount, &s_vertexBufferId );
-			const auto errorCode = glGetError();
-			if ( errorCode != GL_NO_ERROR )
-			{
-				if ( result )
-				{
-					result = Results::Failure;
-				}
-				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				Logging::OutputError( "OpenGL failed to delete the vertex buffer: %s",
-					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-			}
-			s_vertexBufferId = 0;
-		}
-	}
-	if ( s_programId != 0 )
+	//{
+	//	if ( s_vertexArrayId != 0 )
+	//	{
+	//		// Make sure that the vertex array isn't bound
+	//		{
+	//			// Unbind the vertex array
+	//			glBindVertexArray( 0 );
+	//			const auto errorCode = glGetError();
+	//			if ( errorCode != GL_NO_ERROR )
+	//			{
+	//				if ( result )
+	//				{
+	//					result = Results::Failure;
+	//				}
+	//				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				Logging::OutputError( "OpenGL failed to unbind all vertex arrays before cleaning up geometry: %s",
+	//					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			}
+	//		}
+	//		constexpr GLsizei arrayCount = 1;
+	//		glDeleteVertexArrays( arrayCount, &s_vertexArrayId );
+	//		const auto errorCode = glGetError();
+	//		if ( errorCode != GL_NO_ERROR )
+	//		{
+	//			if ( result )
+	//			{
+	//				result = Results::Failure;
+	//			}
+	//			EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			Logging::OutputError( "OpenGL failed to delete the vertex array: %s",
+	//				reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//		}
+	//		s_vertexArrayId = 0;
+	//	}
+	//	if ( s_vertexBufferId != 0 )
+	//	{
+	//		constexpr GLsizei bufferCount = 1;
+	//		glDeleteBuffers( bufferCount, &s_vertexBufferId );
+	//		const auto errorCode = glGetError();
+	//		if ( errorCode != GL_NO_ERROR )
+	//		{
+	//			if ( result )
+	//			{
+	//				result = Results::Failure;
+	//			}
+	//			EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			Logging::OutputError( "OpenGL failed to delete the vertex buffer: %s",
+	//				reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//		}
+	//		s_vertexBufferId = 0;
+	//	}
+	//}
+	result = s_mesh.CleanUp();
+
+	/*if ( s_programId != 0 )
 	{
 		glDeleteProgram( s_programId );
 		const auto errorCode = glGetError();
@@ -382,7 +423,8 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	{
 		s_fragmentShader->DecrementReferenceCount();
 		s_fragmentShader = nullptr;
-	}
+	}*/
+	result = s_effect.CleanUp();
 
 	{
 		const auto result_constantBuffer_frame = s_constantBuffer_frame.CleanUp();
@@ -416,343 +458,343 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 
 namespace
 {
-	eae6320::cResult InitializeGeometry()
-	{
-		auto result = eae6320::Results::Success;
+	//eae6320::cResult InitializeGeometry()
+	//{
+	//	auto result = eae6320::Results::Success;
 
-		// Create a vertex array object and make it active
-		{
-			constexpr GLsizei arrayCount = 1;
-			glGenVertexArrays( arrayCount, &s_vertexArrayId );
-			const auto errorCode = glGetError();
-			if ( errorCode == GL_NO_ERROR )
-			{
-				glBindVertexArray( s_vertexArrayId );
-				const auto errorCode = glGetError();
-				if ( errorCode != GL_NO_ERROR )
-				{
-					result = eae6320::Results::Failure;
-					EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					eae6320::Logging::OutputError( "OpenGL failed to bind a new vertex array: %s",
-						reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					return result;
-				}
-			}
-			else
-			{
-				result = eae6320::Results::Failure;
-				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				eae6320::Logging::OutputError( "OpenGL failed to get an unused vertex array ID: %s",
-					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				return result;
-			}
-		}
-		// Create a vertex buffer object and make it active
-		{
-			constexpr GLsizei bufferCount = 1;
-			glGenBuffers( bufferCount, &s_vertexBufferId );
-			const auto errorCode = glGetError();
-			if ( errorCode == GL_NO_ERROR )
-			{
-				glBindBuffer( GL_ARRAY_BUFFER, s_vertexBufferId );
-				const auto errorCode = glGetError();
-				if ( errorCode != GL_NO_ERROR )
-				{
-					result = eae6320::Results::Failure;
-					EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					eae6320::Logging::OutputError( "OpenGL failed to bind a new vertex buffer: %s",
-						reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					return result;
-				}
-			}
-			else
-			{
-				result = eae6320::Results::Failure;
-				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				eae6320::Logging::OutputError( "OpenGL failed to get an unused vertex buffer ID: %s",
-					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				return result;
-			}
-		}
-		// Assign the data to the buffer
-		{
-			constexpr unsigned int triangleCount = 1;
-			constexpr unsigned int vertexCountPerTriangle = 3;
-			const auto vertexCount = triangleCount * vertexCountPerTriangle;
-			eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[vertexCount];
-			{
-				// OpenGL is right-handed
+	//	// Create a vertex array object and make it active
+	//	{
+	//		constexpr GLsizei arrayCount = 1;
+	//		glGenVertexArrays( arrayCount, &s_vertexArrayId );
+	//		const auto errorCode = glGetError();
+	//		if ( errorCode == GL_NO_ERROR )
+	//		{
+	//			glBindVertexArray( s_vertexArrayId );
+	//			const auto errorCode = glGetError();
+	//			if ( errorCode != GL_NO_ERROR )
+	//			{
+	//				result = eae6320::Results::Failure;
+	//				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				eae6320::Logging::OutputError( "OpenGL failed to bind a new vertex array: %s",
+	//					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				return result;
+	//			}
+	//		}
+	//		else
+	//		{
+	//			result = eae6320::Results::Failure;
+	//			EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			eae6320::Logging::OutputError( "OpenGL failed to get an unused vertex array ID: %s",
+	//				reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			return result;
+	//		}
+	//	}
+	//	// Create a vertex buffer object and make it active
+	//	{
+	//		constexpr GLsizei bufferCount = 1;
+	//		glGenBuffers( bufferCount, &s_vertexBufferId );
+	//		const auto errorCode = glGetError();
+	//		if ( errorCode == GL_NO_ERROR )
+	//		{
+	//			glBindBuffer( GL_ARRAY_BUFFER, s_vertexBufferId );
+	//			const auto errorCode = glGetError();
+	//			if ( errorCode != GL_NO_ERROR )
+	//			{
+	//				result = eae6320::Results::Failure;
+	//				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				eae6320::Logging::OutputError( "OpenGL failed to bind a new vertex buffer: %s",
+	//					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				return result;
+	//			}
+	//		}
+	//		else
+	//		{
+	//			result = eae6320::Results::Failure;
+	//			EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			eae6320::Logging::OutputError( "OpenGL failed to get an unused vertex buffer ID: %s",
+	//				reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			return result;
+	//		}
+	//	}
+	//	// Assign the data to the buffer
+	//	{
+	//		constexpr unsigned int triangleCount = 1;
+	//		constexpr unsigned int vertexCountPerTriangle = 3;
+	//		const auto vertexCount = triangleCount * vertexCountPerTriangle;
+	//		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[vertexCount];
+	//		{
+	//			// OpenGL is right-handed
 
-				vertexData[0].x = 0.0f;
-				vertexData[0].y = 0.0f;
-				vertexData[0].z = 0.0f;
+	//			vertexData[0].x = 0.0f;
+	//			vertexData[0].y = 0.0f;
+	//			vertexData[0].z = 0.0f;
 
-				vertexData[1].x = 1.0f;
-				vertexData[1].y = 0.0f;
-				vertexData[1].z = 0.0f;
+	//			vertexData[1].x = 1.0f;
+	//			vertexData[1].y = 0.0f;
+	//			vertexData[1].z = 0.0f;
 
-				vertexData[2].x = 1.0f;
-				vertexData[2].y = 1.0f;
-				vertexData[2].z = 0.0f;
-			}
-			constexpr auto bufferSize = sizeof( vertexData[0] ) * vertexCount;
-			EAE6320_ASSERT( bufferSize <= std::numeric_limits<GLsizeiptr>::max() );
-			glBufferData( GL_ARRAY_BUFFER, static_cast<GLsizeiptr>( bufferSize ), reinterpret_cast<GLvoid*>( vertexData ),
-				// In our class we won't ever read from the buffer
-				GL_STATIC_DRAW );
-			const auto errorCode = glGetError();
-			if ( errorCode != GL_NO_ERROR )
-			{
-				result = eae6320::Results::Failure;
-				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				eae6320::Logging::OutputError( "OpenGL failed to allocate the vertex buffer: %s",
-					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				return result;
-			}
-		}
-		// Initialize vertex format
-		{
-			// The "stride" defines how large a single vertex is in the stream of data
-			// (or, said another way, how far apart each position element is)
-			constexpr auto stride = static_cast<GLsizei>( sizeof( eae6320::Graphics::VertexFormats::sVertex_mesh ) );
+	//			vertexData[2].x = 1.0f;
+	//			vertexData[2].y = 1.0f;
+	//			vertexData[2].z = 0.0f;
+	//		}
+	//		constexpr auto bufferSize = sizeof( vertexData[0] ) * vertexCount;
+	//		EAE6320_ASSERT( bufferSize <= std::numeric_limits<GLsizeiptr>::max() );
+	//		glBufferData( GL_ARRAY_BUFFER, static_cast<GLsizeiptr>( bufferSize ), reinterpret_cast<GLvoid*>( vertexData ),
+	//			// In our class we won't ever read from the buffer
+	//			GL_STATIC_DRAW );
+	//		const auto errorCode = glGetError();
+	//		if ( errorCode != GL_NO_ERROR )
+	//		{
+	//			result = eae6320::Results::Failure;
+	//			EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			eae6320::Logging::OutputError( "OpenGL failed to allocate the vertex buffer: %s",
+	//				reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			return result;
+	//		}
+	//	}
+	//	// Initialize vertex format
+	//	{
+	//		// The "stride" defines how large a single vertex is in the stream of data
+	//		// (or, said another way, how far apart each position element is)
+	//		constexpr auto stride = static_cast<GLsizei>( sizeof( eae6320::Graphics::VertexFormats::sVertex_mesh ) );
 
-			// Position (0)
-			// 3 floats == 12 bytes
-			// Offset = 0
-			{
-				constexpr GLuint vertexElementLocation = 0;
-				constexpr GLint elementCount = 3;
-				constexpr GLboolean notNormalized = GL_FALSE;	// The given floats should be used as-is
-				glVertexAttribPointer( vertexElementLocation, elementCount, GL_FLOAT, notNormalized, stride,
-					reinterpret_cast<GLvoid*>( offsetof( eae6320::Graphics::VertexFormats::sVertex_mesh, x ) ) );
-				const auto errorCode = glGetError();
-				if ( errorCode == GL_NO_ERROR )
-				{
-					glEnableVertexAttribArray( vertexElementLocation );
-					const GLenum errorCode = glGetError();
-					if ( errorCode != GL_NO_ERROR )
-					{
-						result = eae6320::Results::Failure;
-						EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-						eae6320::Logging::OutputError( "OpenGL failed to enable the POSITION vertex attribute at location %u: %s",
-							vertexElementLocation, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-						return result;
-					}
-				}
-				else
-				{
-					result = eae6320::Results::Failure;
-					EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					eae6320::Logging::OutputError( "OpenGL failed to set the POSITION vertex attribute at location %u: %s",
-						vertexElementLocation, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					return result;
-				}
-			}
-		}
+	//		// Position (0)
+	//		// 3 floats == 12 bytes
+	//		// Offset = 0
+	//		{
+	//			constexpr GLuint vertexElementLocation = 0;
+	//			constexpr GLint elementCount = 3;
+	//			constexpr GLboolean notNormalized = GL_FALSE;	// The given floats should be used as-is
+	//			glVertexAttribPointer( vertexElementLocation, elementCount, GL_FLOAT, notNormalized, stride,
+	//				reinterpret_cast<GLvoid*>( offsetof( eae6320::Graphics::VertexFormats::sVertex_mesh, x ) ) );
+	//			const auto errorCode = glGetError();
+	//			if ( errorCode == GL_NO_ERROR )
+	//			{
+	//				glEnableVertexAttribArray( vertexElementLocation );
+	//				const GLenum errorCode = glGetError();
+	//				if ( errorCode != GL_NO_ERROR )
+	//				{
+	//					result = eae6320::Results::Failure;
+	//					EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//					eae6320::Logging::OutputError( "OpenGL failed to enable the POSITION vertex attribute at location %u: %s",
+	//						vertexElementLocation, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//					return result;
+	//				}
+	//			}
+	//			else
+	//			{
+	//				result = eae6320::Results::Failure;
+	//				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				eae6320::Logging::OutputError( "OpenGL failed to set the POSITION vertex attribute at location %u: %s",
+	//					vertexElementLocation, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				return result;
+	//			}
+	//		}
+	//	}
 
-		return result;
-	}
+	//	return result;
+	//}
 
-	eae6320::cResult InitializeShadingData()
-	{
-		auto result = eae6320::Results::Success;
+	//eae6320::cResult InitializeShadingData()
+	//{
+	//	auto result = eae6320::Results::Success;
 
-		if ( !( result = eae6320::Graphics::cShader::Load( "data/Shaders/Vertex/standard.shader",
-			s_vertexShader, eae6320::Graphics::eShaderType::Vertex ) ) )
-		{
-			EAE6320_ASSERTF( false, "Can't initialize shading data without vertex shader" );
-			return result;
-		}
-		if ( !( result = eae6320::Graphics::cShader::Load( "data/Shaders/Fragment/myShader.shader",
-			s_fragmentShader, eae6320::Graphics::eShaderType::Fragment ) ) )
-		{
-			EAE6320_ASSERTF( false, "Can't initialize shading data without fragment shader" );
-			return result;
-		}
-		{
-			constexpr auto renderStateBits = []
-			{
-				uint8_t renderStateBits = 0;
+	//	if ( !( result = eae6320::Graphics::cShader::Load( "data/Shaders/Vertex/standard.shader",
+	//		s_vertexShader, eae6320::Graphics::eShaderType::Vertex ) ) )
+	//	{
+	//		EAE6320_ASSERTF( false, "Can't initialize shading data without vertex shader" );
+	//		return result;
+	//	}
+	//	if ( !( result = eae6320::Graphics::cShader::Load( "data/Shaders/Fragment/myShader.shader",
+	//		s_fragmentShader, eae6320::Graphics::eShaderType::Fragment ) ) )
+	//	{
+	//		EAE6320_ASSERTF( false, "Can't initialize shading data without fragment shader" );
+	//		return result;
+	//	}
+	//	{
+	//		constexpr auto renderStateBits = []
+	//		{
+	//			uint8_t renderStateBits = 0;
 
-				eae6320::Graphics::RenderStates::DisableAlphaTransparency( renderStateBits );
-				eae6320::Graphics::RenderStates::DisableDepthTesting( renderStateBits );
-				eae6320::Graphics::RenderStates::DisableDepthWriting( renderStateBits );
-				eae6320::Graphics::RenderStates::DisableDrawingBothTriangleSides( renderStateBits );
+	//			eae6320::Graphics::RenderStates::DisableAlphaTransparency( renderStateBits );
+	//			eae6320::Graphics::RenderStates::DisableDepthTesting( renderStateBits );
+	//			eae6320::Graphics::RenderStates::DisableDepthWriting( renderStateBits );
+	//			eae6320::Graphics::RenderStates::DisableDrawingBothTriangleSides( renderStateBits );
 
-				return renderStateBits;
-			}();
-			if ( !( result = s_renderState.Initialize( renderStateBits ) ) )
-			{
-				EAE6320_ASSERTF( false, "Can't initialize shading data without render state" );
-				return result;
-			}
-		}
+	//			return renderStateBits;
+	//		}();
+	//		if ( !( result = s_renderState.Initialize( renderStateBits ) ) )
+	//		{
+	//			EAE6320_ASSERTF( false, "Can't initialize shading data without render state" );
+	//			return result;
+	//		}
+	//	}
 
-		// Create a program
-		eae6320::cScopeGuard scopeGuard_program( [&result]
-			{
-				if ( !result )
-				{
-					if ( s_programId != 0 )
-					{
-						glDeleteProgram( s_programId );
-						const auto errorCode = glGetError();
-						if ( errorCode != GL_NO_ERROR )
-						{
-							EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-							eae6320::Logging::OutputError( "OpenGL failed to delete the program: %s",
-								reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-						}
-						s_programId = 0;
-					}
-				}
-			} );
-		{
-			EAE6320_ASSERT( s_programId == 0 );
-			s_programId = glCreateProgram();
-			const auto errorCode = glGetError();
-			if ( errorCode != GL_NO_ERROR )
-			{
-				result = eae6320::Results::Failure;
-				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				eae6320::Logging::OutputError( "OpenGL failed to create a program: %s",
-					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				return result;
-			}
-			else if ( s_programId == 0 )
-			{
-				result = eae6320::Results::Failure;
-				EAE6320_ASSERT( false );
-				eae6320::Logging::OutputError( "OpenGL failed to create a program" );
-				return result;
-			}
-		}
-		// Attach the shaders to the program
-		{
-			// Vertex
-			{
-				EAE6320_ASSERT( ( s_vertexShader != nullptr ) && ( s_vertexShader->m_shaderId != 0 ) );
-				glAttachShader( s_programId, s_vertexShader->m_shaderId );
-				const auto errorCode = glGetError();
-				if ( errorCode != GL_NO_ERROR )
-				{
-					result = eae6320::Results::Failure;
-					EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					eae6320::Logging::OutputError( "OpenGL failed to attach the vertex shader to the program: %s",
-						reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					return result;
-				}
-			}
-			// Fragment
-			{
-				EAE6320_ASSERT( ( s_fragmentShader != nullptr ) && ( s_fragmentShader->m_shaderId != 0 ) );
-				glAttachShader( s_programId, s_fragmentShader->m_shaderId );
-				const auto errorCode = glGetError();
-				if ( errorCode != GL_NO_ERROR )
-				{
-					result = eae6320::Results::Failure;
-					EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					eae6320::Logging::OutputError( "OpenGL failed to attach the fragment shader to the program: %s",
-						reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-					return result;
-				}
-			}
-		}
-		// Link the program
-		{
-			glLinkProgram( s_programId );
-			const auto errorCode = glGetError();
-			if ( errorCode == GL_NO_ERROR )
-			{
-				// Get link info
-				// (this won't be used unless linking fails
-				// but it can be useful to look at when debugging)
-				std::string linkInfo;
-				{
-					GLint infoSize;
-					glGetProgramiv( s_programId, GL_INFO_LOG_LENGTH, &infoSize );
-					const auto errorCode = glGetError();
-					if ( errorCode == GL_NO_ERROR )
-					{
-						if ( infoSize > 0 )
-						{
-							auto* const info = new (std::nothrow) GLchar[infoSize];
-							if ( info )
-							{
-								eae6320::cScopeGuard scopeGuard_info( [info]
-									{
-										delete [] info;
-									} );
-								constexpr GLsizei* const dontReturnLength = nullptr;
-								glGetProgramInfoLog( s_programId, static_cast<GLsizei>( infoSize ), dontReturnLength, info );
-								const auto errorCode = glGetError();
-								if ( errorCode == GL_NO_ERROR )
-								{
-									linkInfo = info;
-								}
-								else
-								{
-									result = eae6320::Results::Failure;
-									EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-									eae6320::Logging::OutputError( "OpenGL failed to get link info of the program: %s",
-										reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-									return result;
-								}
-							}
-							else
-							{
-								result = eae6320::Results::OutOfMemory;
-								EAE6320_ASSERTF( false, "Couldn't allocate memory for the program link info" );
-								eae6320::Logging::OutputError( "Failed to allocate memory for the program link info" );
-								return result;
-							}
-						}
-					}
-					else
-					{
-						result = eae6320::Results::Failure;
-						EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-						eae6320::Logging::OutputError( "OpenGL failed to get the length of the program link info: %s",
-							reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-						return result;
-					}
-				}
-				// Check to see if there were link errors
-				GLint didLinkingSucceed;
-				{
-					glGetProgramiv( s_programId, GL_LINK_STATUS, &didLinkingSucceed );
-					const auto errorCode = glGetError();
-					if ( errorCode == GL_NO_ERROR )
-					{
-						if ( didLinkingSucceed == GL_FALSE )
-						{
-							result = eae6320::Results::Failure;
-							EAE6320_ASSERTF( false, linkInfo.c_str() );
-							eae6320::Logging::OutputError( "The program failed to link: %s",
-								linkInfo.c_str() );
-							return result;
-						}
-					}
-					else
-					{
-						result = eae6320::Results::Failure;
-						EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-						eae6320::Logging::OutputError( "OpenGL failed to find out if linking of the program succeeded: %s",
-							reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-						return result;
-					}
-				}
-			}
-			else
-			{
-				result = eae6320::Results::Failure;
-				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				eae6320::Logging::OutputError( "OpenGL failed to link the program: %s",
-					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
-				return result;
-			}
-		}
+	//	// Create a program
+	//	eae6320::cScopeGuard scopeGuard_program( [&result]
+	//		{
+	//			if ( !result )
+	//			{
+	//				if ( s_programId != 0 )
+	//				{
+	//					glDeleteProgram( s_programId );
+	//					const auto errorCode = glGetError();
+	//					if ( errorCode != GL_NO_ERROR )
+	//					{
+	//						EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//						eae6320::Logging::OutputError( "OpenGL failed to delete the program: %s",
+	//							reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//					}
+	//					s_programId = 0;
+	//				}
+	//			}
+	//		} );
+	//	{
+	//		EAE6320_ASSERT( s_programId == 0 );
+	//		s_programId = glCreateProgram();
+	//		const auto errorCode = glGetError();
+	//		if ( errorCode != GL_NO_ERROR )
+	//		{
+	//			result = eae6320::Results::Failure;
+	//			EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			eae6320::Logging::OutputError( "OpenGL failed to create a program: %s",
+	//				reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			return result;
+	//		}
+	//		else if ( s_programId == 0 )
+	//		{
+	//			result = eae6320::Results::Failure;
+	//			EAE6320_ASSERT( false );
+	//			eae6320::Logging::OutputError( "OpenGL failed to create a program" );
+	//			return result;
+	//		}
+	//	}
+	//	// Attach the shaders to the program
+	//	{
+	//		// Vertex
+	//		{
+	//			EAE6320_ASSERT( ( s_vertexShader != nullptr ) && ( s_vertexShader->m_shaderId != 0 ) );
+	//			glAttachShader( s_programId, s_vertexShader->m_shaderId );
+	//			const auto errorCode = glGetError();
+	//			if ( errorCode != GL_NO_ERROR )
+	//			{
+	//				result = eae6320::Results::Failure;
+	//				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				eae6320::Logging::OutputError( "OpenGL failed to attach the vertex shader to the program: %s",
+	//					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				return result;
+	//			}
+	//		}
+	//		// Fragment
+	//		{
+	//			EAE6320_ASSERT( ( s_fragmentShader != nullptr ) && ( s_fragmentShader->m_shaderId != 0 ) );
+	//			glAttachShader( s_programId, s_fragmentShader->m_shaderId );
+	//			const auto errorCode = glGetError();
+	//			if ( errorCode != GL_NO_ERROR )
+	//			{
+	//				result = eae6320::Results::Failure;
+	//				EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				eae6320::Logging::OutputError( "OpenGL failed to attach the fragment shader to the program: %s",
+	//					reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//				return result;
+	//			}
+	//		}
+	//	}
+	//	// Link the program
+	//	{
+	//		glLinkProgram( s_programId );
+	//		const auto errorCode = glGetError();
+	//		if ( errorCode == GL_NO_ERROR )
+	//		{
+	//			// Get link info
+	//			// (this won't be used unless linking fails
+	//			// but it can be useful to look at when debugging)
+	//			std::string linkInfo;
+	//			{
+	//				GLint infoSize;
+	//				glGetProgramiv( s_programId, GL_INFO_LOG_LENGTH, &infoSize );
+	//				const auto errorCode = glGetError();
+	//				if ( errorCode == GL_NO_ERROR )
+	//				{
+	//					if ( infoSize > 0 )
+	//					{
+	//						auto* const info = new (std::nothrow) GLchar[infoSize];
+	//						if ( info )
+	//						{
+	//							eae6320::cScopeGuard scopeGuard_info( [info]
+	//								{
+	//									delete [] info;
+	//								} );
+	//							constexpr GLsizei* const dontReturnLength = nullptr;
+	//							glGetProgramInfoLog( s_programId, static_cast<GLsizei>( infoSize ), dontReturnLength, info );
+	//							const auto errorCode = glGetError();
+	//							if ( errorCode == GL_NO_ERROR )
+	//							{
+	//								linkInfo = info;
+	//							}
+	//							else
+	//							{
+	//								result = eae6320::Results::Failure;
+	//								EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//								eae6320::Logging::OutputError( "OpenGL failed to get link info of the program: %s",
+	//									reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//								return result;
+	//							}
+	//						}
+	//						else
+	//						{
+	//							result = eae6320::Results::OutOfMemory;
+	//							EAE6320_ASSERTF( false, "Couldn't allocate memory for the program link info" );
+	//							eae6320::Logging::OutputError( "Failed to allocate memory for the program link info" );
+	//							return result;
+	//						}
+	//					}
+	//				}
+	//				else
+	//				{
+	//					result = eae6320::Results::Failure;
+	//					EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//					eae6320::Logging::OutputError( "OpenGL failed to get the length of the program link info: %s",
+	//						reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//					return result;
+	//				}
+	//			}
+	//			// Check to see if there were link errors
+	//			GLint didLinkingSucceed;
+	//			{
+	//				glGetProgramiv( s_programId, GL_LINK_STATUS, &didLinkingSucceed );
+	//				const auto errorCode = glGetError();
+	//				if ( errorCode == GL_NO_ERROR )
+	//				{
+	//					if ( didLinkingSucceed == GL_FALSE )
+	//					{
+	//						result = eae6320::Results::Failure;
+	//						EAE6320_ASSERTF( false, linkInfo.c_str() );
+	//						eae6320::Logging::OutputError( "The program failed to link: %s",
+	//							linkInfo.c_str() );
+	//						return result;
+	//					}
+	//				}
+	//				else
+	//				{
+	//					result = eae6320::Results::Failure;
+	//					EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//					eae6320::Logging::OutputError( "OpenGL failed to find out if linking of the program succeeded: %s",
+	//						reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//					return result;
+	//				}
+	//			}
+	//		}
+	//		else
+	//		{
+	//			result = eae6320::Results::Failure;
+	//			EAE6320_ASSERTF( false, reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			eae6320::Logging::OutputError( "OpenGL failed to link the program: %s",
+	//				reinterpret_cast<const char*>( gluErrorString( errorCode ) ) );
+	//			return result;
+	//		}
+	//	}
 
-		return result;
-	}
+	//	return result;
+	//}
 }
