@@ -11,6 +11,10 @@
 #include "cShader.h"
 #include "cRenderState.h"
 
+#ifdef EAE6320_PLATFORM_D3D
+	#include "sContext.h"
+#endif
+
 namespace
 {
 //#ifdef EAE6320_PLATFORM_GL
@@ -28,12 +32,11 @@ namespace eae6320
 			// Interface
 			//==========
 #ifdef EAE6320_PLATFORM_GL
-			void BindShadingData();
 			eae6320::cResult CleanUp();
 #elif EAE6320_PLATFORM_D3D
-			void BindShadingData(ID3D11DeviceContext* i_direct3dImmediateContext);
 			void CleanUp();
 #endif // EAE6320_PLATFORM_GL
+			void BindShadingData();
 
 			eae6320::cResult InitializeShadingData();
 

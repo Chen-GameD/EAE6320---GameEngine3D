@@ -33,12 +33,11 @@ namespace eae6320
 			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[6]);
 
 #ifdef EAE6320_PLATFORM_GL
-			void DrawGeometry();
 			eae6320::cResult CleanUp();
 #elif EAE6320_PLATFORM_D3D
-			void DrawGeometry(ID3D11DeviceContext* i_direct3dImmediateContext);
 			void CleanUp();
 #endif // DEBUG
+			void DrawGeometry();
 
 		private:
 #ifdef EAE6320_PLATFORM_GL

@@ -118,9 +118,9 @@ void eae6320::Graphics::cMesh::CleanUp()
 // Draw
 //----------------------
 
-void eae6320::Graphics::cMesh::DrawGeometry(ID3D11DeviceContext* i_direct3dImmediateContext)
+void eae6320::Graphics::cMesh::DrawGeometry()
 {
-	auto* const direct3dImmediateContext = i_direct3dImmediateContext;
+	auto* const direct3dImmediateContext = sContext::g_context.direct3dImmediateContext;
 	EAE6320_ASSERT(direct3dImmediateContext);
 
 	// Bind a specific vertex buffer to the device as a data source

@@ -206,7 +206,7 @@ void eae6320::Graphics::RenderFrame()
 	//		s_renderState.Bind();
 	//	}
 	//}
-	s_effect.BindShadingData(direct3dImmediateContext);
+	s_effect.BindShadingData();
 	
 	//// Draw the geometry
 	//{
@@ -245,7 +245,7 @@ void eae6320::Graphics::RenderFrame()
 	//		direct3dImmediateContext->Draw( vertexCountToRender, indexOfFirstVertexToRender );
 	//	}
 	//}
-	s_mesh.DrawGeometry(direct3dImmediateContext);
+	s_mesh.DrawGeometry();
 
 	// Everything has been drawn to the "back buffer", which is just an image in memory.
 	// In order to display it the contents of the back buffer must be "presented"

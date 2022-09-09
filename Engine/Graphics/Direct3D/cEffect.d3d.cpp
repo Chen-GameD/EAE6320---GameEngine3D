@@ -65,10 +65,10 @@ void eae6320::Graphics::cEffect::CleanUp()
 // Bind
 //----------------------
 
-void eae6320::Graphics::cEffect::BindShadingData(ID3D11DeviceContext* i_direct3dImmediateContext)
+void eae6320::Graphics::cEffect::BindShadingData()
 {
 	// Bind the shading data
-	auto* const direct3dImmediateContext = i_direct3dImmediateContext;
+	auto* const direct3dImmediateContext = sContext::g_context.direct3dImmediateContext;
 	EAE6320_ASSERT(direct3dImmediateContext);
 
 	{
