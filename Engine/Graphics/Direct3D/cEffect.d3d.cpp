@@ -48,8 +48,10 @@ eae6320::cResult eae6320::Graphics::cEffect::InitializeShadingData()
 	return result;
 }
 
-void eae6320::Graphics::cEffect::CleanUp()
+eae6320::cResult eae6320::Graphics::cEffect::CleanUp()
 {
+	auto result = Results::Success;
+
 	if (m_vertexShader)
 	{
 		m_vertexShader->DecrementReferenceCount();
@@ -60,6 +62,7 @@ void eae6320::Graphics::cEffect::CleanUp()
 		m_fragmentShader->DecrementReferenceCount();
 		m_fragmentShader = nullptr;
 	}
+	return result;
 }
 
 // Bind

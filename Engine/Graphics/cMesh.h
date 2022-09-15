@@ -15,7 +15,9 @@
 #elif EAE6320_PLATFORM_D3D
 	#include "cVertexFormat.h"
 	#include "sContext.h"
+	#include "cConstantBuffer.h"
 #endif
+
 
 namespace eae6320
 {
@@ -32,11 +34,8 @@ namespace eae6320
 			//This will change in future...
 			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[6]);
 
-#ifdef EAE6320_PLATFORM_GL
 			eae6320::cResult CleanUp();
-#elif EAE6320_PLATFORM_D3D
-			void CleanUp();
-#endif // DEBUG
+
 			void DrawGeometry();
 
 		private:

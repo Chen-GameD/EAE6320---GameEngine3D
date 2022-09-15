@@ -101,8 +101,10 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics:
 	return result;
 }
 
-void eae6320::Graphics::cMesh::CleanUp()
+eae6320::cResult eae6320::Graphics::cMesh::CleanUp()
 {
+	auto result = Results::Success;
+
 	if (m_vertexBuffer)
 	{
 		m_vertexBuffer->Release();
@@ -113,6 +115,7 @@ void eae6320::Graphics::cMesh::CleanUp()
 		m_vertexFormat->DecrementReferenceCount();
 		m_vertexFormat = nullptr;
 	}
+	return result;
 }
 
 // Draw

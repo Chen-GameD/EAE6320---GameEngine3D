@@ -17,11 +17,18 @@
 	#include <Engine/Windows/Includes.h>
 #endif
 
+#include "ConstantBufferFormats.h"
+
 // Interface
 //==========
 
 namespace eae6320
 {
+	struct sDataRequiredToRenderAFrame
+	{
+		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
+	};
+
 	namespace Graphics
 	{
 		// Submission
