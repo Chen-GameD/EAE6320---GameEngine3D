@@ -221,6 +221,9 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
 		}
+
+
+		Logging::OutputMessage("A single effect takes : %d:", sizeof(s_effect_1));
 	}
 	// Initialize the geometry
 	{
@@ -295,6 +298,8 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
 		}
+
+		Logging::OutputMessage("A single mesh takes : %d:", sizeof(s_mesh_1));
 	}
 
 	return result;

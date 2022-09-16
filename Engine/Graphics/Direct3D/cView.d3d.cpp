@@ -195,7 +195,7 @@ void eae6320::Graphics::cView::ClearImageBuffer()
 		EAE6320_ASSERT(m_renderTargetView);
 
 		// Black is usually used
-		constexpr float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		constexpr float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		direct3dImmediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	}
 }

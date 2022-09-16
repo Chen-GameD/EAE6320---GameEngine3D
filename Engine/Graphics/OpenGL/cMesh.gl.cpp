@@ -14,6 +14,12 @@
 
 eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount)
 {
+	// how much memory the member variables take
+	Logging::OutputMessage("m_vertexBufferId takes : %d:", sizeof(m_vertexBufferId));
+	Logging::OutputMessage("m_vertexArrayId takes : %d:", sizeof(m_vertexArrayId));
+	Logging::OutputMessage("m_indexBufferId takes : %d:", sizeof(m_indexBufferId));
+	Logging::OutputMessage("m_indexCountToRender takes : %d:", sizeof(m_indexCountToRender));
+
 	auto result = eae6320::Results::Success;
 
 	// Create a vertex array object and make it active

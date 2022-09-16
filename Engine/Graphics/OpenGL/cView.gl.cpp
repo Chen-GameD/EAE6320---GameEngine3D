@@ -36,7 +36,7 @@ void eae6320::Graphics::cView::ClearImageBuffer()
 	{
 		// Black is usually used
 		{
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			EAE6320_ASSERT(glGetError() == GL_NO_ERROR);
 		}
 		{

@@ -4,6 +4,8 @@
 #include "Includes.h"
 #include "../cEffect.h"
 
+#include <Engine/Logging/Logging.h>
+
 // Implementation
 //===============
 
@@ -12,6 +14,11 @@
 
 eae6320::cResult eae6320::Graphics::cEffect::InitializeShadingData(const char* i_vertexShaderAddress, const char* i_fragmentShaderAddress)
 {
+	// how much memory the member variables take
+	Logging::OutputMessage("m_vertexShader takes : %d:", sizeof(m_vertexShader));
+	Logging::OutputMessage("m_fragmentShader takes : %d:", sizeof(m_fragmentShader));
+	Logging::OutputMessage("m_renderState takes : %d:", sizeof(m_renderState));
+
 	auto result = eae6320::Results::Success;
 
 	if (!(result = eae6320::Graphics::cShader::Load(i_vertexShaderAddress,
