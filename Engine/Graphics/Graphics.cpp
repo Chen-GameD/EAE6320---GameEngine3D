@@ -207,7 +207,7 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	// Initialize the geometry
 	{
 		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[6];
+		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[4];
 		{
 			// OpenGL is right-handed
 
@@ -224,19 +224,13 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			vertexData[2].z = 0.0f;
 
 			vertexData[3].x = 0.0f;
-			vertexData[3].y = 0.0f;
+			vertexData[3].y = 1.0f;
 			vertexData[3].z = 0.0f;
-
-			vertexData[4].x = 1.0f;
-			vertexData[4].y = 1.0f;
-			vertexData[4].z = 0.0f;
-
-			vertexData[5].x = 0.0f;
-			vertexData[5].y = 1.0f;
-			vertexData[5].z = 0.0f;
 		}
 
-		if (!(result = s_mesh.InitializeGeometry(vertexData)))
+		uint16_t a[6] = {0,2,1,0,3,2};
+
+		if (!(result = s_mesh.InitializeGeometry(vertexData, a)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
