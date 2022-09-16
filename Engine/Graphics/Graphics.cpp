@@ -51,9 +51,11 @@ namespace
 	eae6320::Concurrency::cEvent s_whenDataForANewFrameCanBeSubmittedFromApplicationThread;
 
 	//static mesh
-	eae6320::Graphics::cMesh s_mesh;
+	eae6320::Graphics::cMesh s_mesh_1;
+	eae6320::Graphics::cMesh s_mesh_2;
 	//static effect
-	eae6320::Graphics::cEffect s_effect;
+	eae6320::Graphics::cEffect s_effect_1;
+	eae6320::Graphics::cEffect s_effect_2;
 }
 
 // Interface
@@ -126,10 +128,16 @@ void eae6320::Graphics::RenderFrame()
 	s_view.UpdateFrameConstantBuffer(s_constantBuffer_frame, s_dataBeingRenderedByRenderThread);
 
 	// Bind the shading data
-	s_effect.BindShadingData();
+	s_effect_1.BindShadingData();
 
 	// Draw the geometry
-	s_mesh.DrawGeometry();
+	s_mesh_1.DrawGeometry();
+
+	// Bind the shading data
+	s_effect_2.BindShadingData();
+
+	// Draw the geometry
+	s_mesh_2.DrawGeometry();
 
 	// Everything has been drawn to the "back buffer", which is just an image in memory.
 	// In order to display it the contents of the back buffer must be "presented"
@@ -198,7 +206,17 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	}
 	// Initialize the shading data
 	{
-		if (!(result = s_effect.InitializeShadingData()))
+		const char* vertexShaderAddress_1 = "data/Shaders/Vertex/standard.shader";
+		const char* fragmentShaderAddress_1 = "data/Shaders/Fragment/myShader_1.shader";
+		if (!(result = s_effect_1.InitializeShadingData(vertexShaderAddress_1, fragmentShaderAddress_1)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+			return result;
+		}
+
+		const char* vertexShaderAddress_2 = "data/Shaders/Vertex/standard.shader";
+		const char* fragmentShaderAddress_2 = "data/Shaders/Fragment/myShader_2.shader";
+		if (!(result = s_effect_2.InitializeShadingData(vertexShaderAddress_2, fragmentShaderAddress_2)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
@@ -207,30 +225,72 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	// Initialize the geometry
 	{
 		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[4];
+		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_1[4];
 		{
 			// OpenGL is right-handed
 
-			vertexData[0].x = 0.0f;
-			vertexData[0].y = 0.0f;
-			vertexData[0].z = 0.0f;
+			vertexData_1[0].x = 0.0f;
+			vertexData_1[0].y = 0.0f;
+			vertexData_1[0].z = 0.0f;
 
-			vertexData[1].x = 1.0f;
-			vertexData[1].y = 0.0f;
-			vertexData[1].z = 0.0f;
+			vertexData_1[1].x = 1.0f;
+			vertexData_1[1].y = 0.0f;
+			vertexData_1[1].z = 0.0f;
 
-			vertexData[2].x = 1.0f;
-			vertexData[2].y = 1.0f;
-			vertexData[2].z = 0.0f;
+			vertexData_1[2].x = 1.0f;
+			vertexData_1[2].y = 1.0f;
+			vertexData_1[2].z = 0.0f;
 
-			vertexData[3].x = 0.0f;
-			vertexData[3].y = 1.0f;
-			vertexData[3].z = 0.0f;
+			vertexData_1[3].x = 0.0f;
+			vertexData_1[3].y = 1.0f;
+			vertexData_1[3].z = 0.0f;
 		}
 
-		uint16_t a[6] = {0,2,1,0,3,2};
+		uint16_t indexArray_1[6] = {0,1,2,0,2,3};
 
-		if (!(result = s_mesh.InitializeGeometry(vertexData, a, 5, 7)))
+		if (!(result = s_mesh_1.InitializeGeometry(vertexData_1, indexArray_1, 4, 6)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			return result;
+		}
+
+		//Data input is temporarily hardcoded...
+		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_2[7];
+		{
+			// OpenGL is right-handed
+
+			vertexData_2[0].x = 0.0f;
+			vertexData_2[0].y = 0.0f;
+			vertexData_2[0].z = 0.0f;
+
+			vertexData_2[1].x = 0.0f;
+			vertexData_2[1].y = 1.0f;
+			vertexData_2[1].z = 0.0f;
+
+			vertexData_2[2].x = -1.0f;
+			vertexData_2[2].y = 1.0f;
+			vertexData_2[2].z = 0.0f;
+
+			vertexData_2[3].x = -1.0f;
+			vertexData_2[3].y = 0.0f;
+			vertexData_2[3].z = 0.0f;
+
+			vertexData_2[4].x = 0.0f;
+			vertexData_2[4].y = -1.0f;
+			vertexData_2[4].z = 0.0f;
+
+			vertexData_2[5].x = 1.0f;
+			vertexData_2[5].y = -1.0f;
+			vertexData_2[5].z = 0.0f;
+
+			vertexData_2[6].x = 1.0f;
+			vertexData_2[6].y = 0.0f;
+			vertexData_2[6].z = 0.0f;
+		}
+
+		uint16_t indexArray_2[15] = { 0,1,2,0,2,3,0,3,4,0,4,5,0,5,6 };
+
+		if (!(result = s_mesh_2.InitializeGeometry(vertexData_2, indexArray_2, 7, 15)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
@@ -246,9 +306,13 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 
 	s_view.CleanUp();
 
-	result = s_mesh.CleanUp();
+	result = s_mesh_1.CleanUp();
 
-	result = s_effect.CleanUp();
+	result = s_effect_1.CleanUp();
+
+	result = s_mesh_2.CleanUp();
+
+	result = s_effect_2.CleanUp();
 
 	{
 		const auto result_constantBuffer_frame = s_constantBuffer_frame.CleanUp();

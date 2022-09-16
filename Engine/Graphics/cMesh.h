@@ -31,14 +31,7 @@ namespace eae6320
 			//==========
 
 		public:
-
-			//Temporarily default triangleCount = 2, vertexCountPerTriangle = 3, so vertexCount = triangleCount * vertexCountPerTriangle = 6;
-			//This will change in future...
-#ifdef EAE6320_PLATFORM_GL
-			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[6]);
-#elif EAE6320_PLATFORM_D3D
 			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount);
-#endif
 
 			eae6320::cResult CleanUp();
 
@@ -57,7 +50,7 @@ namespace eae6320
 			// A vertex array encapsulates the vertex data as well as the vertex input layout
 			GLuint m_vertexArrayId = 0;
 			//An indext array encapsulates the index data as well as the index input layout
-			Gluint m_indexBufferId = 0;
+			GLuint m_indexBufferId = 0;
 #elif EAE6320_PLATFORM_D3D
 			// Geometry Data for D3D
 			//--------------

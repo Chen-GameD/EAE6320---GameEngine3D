@@ -15,6 +15,22 @@
 // Initialize / Clean Up
 //----------------------
 
+uint16_t* ConvertIndexArrayToD3DVersion(uint16_t i_indexArray[], int indexCount)
+{
+	uint16_t* retIndexArray = i_indexArray;
+	for (int i = 0; i < indexCount;)
+	{
+		int j = i;
+		retIndexArray[j] = i_indexArray[j];
+		int temp = i_indexArray[j + 1];
+		retIndexArray[j + 1] = i_indexArray[j + 2];
+		retIndexArray[j + 2] = temp;
+		i += 3;
+	}
+
+	return retIndexArray;
+}
+
 eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount)
 {
 	auto result = eae6320::Results::Success;
@@ -33,40 +49,7 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics:
 	}
 	// Vertex Buffer
 	{
-		//const int t_indexCount = i_indexArray.size();
-		//unsigned int triangleCount = t_indexCount;
-		//unsigned int vertexCountPerTriangle = 3;
-		//constexpr auto vertexCount = triangleCount * vertexCountPerTriangle;
-		//eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[x];
-		//{
-		//	// Direct3D is left-handed
-
-		//	vertexData[0].x = i_vertexData[0].x;
-		//	vertexData[0].y = i_vertexData[0].y;
-		//	vertexData[0].z = i_vertexData[0].z;
-
-		//	vertexData[1].x = i_vertexData[2].x;
-		//	vertexData[1].y = i_vertexData[2].y;
-		//	vertexData[1].z = i_vertexData[2].z;
-
-		//	vertexData[2].x = i_vertexData[1].x;
-		//	vertexData[2].y = i_vertexData[1].y;
-		//	vertexData[2].z = i_vertexData[1].z;
-
-		//	vertexData[3].x = i_vertexData[3].x;
-		//	vertexData[3].y = i_vertexData[3].y;
-		//	vertexData[3].z = i_vertexData[3].z;
-
-		//	vertexData[4].x = i_vertexData[5].x;
-		//	vertexData[4].y = i_vertexData[5].y;
-		//	vertexData[4].z = i_vertexData[5].z;
-
-		//	vertexData[5].x = i_vertexData[4].x;
-		//	vertexData[5].y = i_vertexData[4].y;
-		//	vertexData[5].z = i_vertexData[4].z;
-		//}
-
-		auto dataBufferSize = sizeof(i_vertexData) * vertexCount;
+		auto dataBufferSize = sizeof(i_vertexData[0]) * vertexCount;
 		EAE6320_ASSERT(dataBufferSize <= std::numeric_limits<decltype(D3D11_BUFFER_DESC::ByteWidth)>::max());
 		auto dataBufferDescription = [dataBufferSize]
 		{
@@ -102,9 +85,11 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics:
 		}
 
 		// Index Buffer
-		auto indexBufferSize = sizeof(i_indexArray) * indexCount;
+		uint16_t* indexArray = ConvertIndexArrayToD3DVersion(i_indexArray, indexCount);
+
+		auto indexBufferSize = sizeof(i_indexArray[0]) * indexCount;
 		EAE6320_ASSERT(indexBufferSize <= std::numeric_limits<decltype(D3D11_BUFFER_DESC::ByteWidth)>::max());
-		m_indexCountToRender = (unsigned int)indexBufferSize;
+		m_indexCountToRender = indexCount;
 		auto indexBufferDescription = [indexBufferSize]
 		{
 			D3D11_BUFFER_DESC bufferDescription{};
@@ -119,11 +104,11 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics:
 			return bufferDescription;
 		}();
 
-		const auto initialData = [i_indexArray]
+		const auto initialData = [indexArray]
 		{
 			D3D11_SUBRESOURCE_DATA initialData{};
 
-			initialData.pSysMem = i_indexArray;
+			initialData.pSysMem = indexArray;
 			// (The other data members are ignored for non-texture buffers)
 
 			return initialData;
@@ -133,8 +118,8 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics:
 		if (FAILED(indexResult_create))
 		{
 			result = eae6320::Results::Failure;
-			EAE6320_ASSERTF(false, "3D object vertex buffer creation failed (HRESULT %#010x)", indexResult_create);
-			eae6320::Logging::OutputError("Direct3D failed to create a 3D object vertex buffer (HRESULT %#010x)", indexResult_create);
+			EAE6320_ASSERTF(false, "3D object index buffer creation failed (HRESULT %#010x)", indexResult_create);
+			eae6320::Logging::OutputError("Direct3D failed to create a 3D object index buffer (HRESULT %#010x)", indexResult_create);
 			return result;
 		}
 
@@ -187,7 +172,7 @@ void eae6320::Graphics::cMesh::DrawGeometry()
 
 	// Bind a specific index buffer to the devive as a index source
 	{
-		EAE6320_ASSERT(m_indexBuffer != nullptr);
+		EAE6320_ASSERT(m_indexBuffer);
 		constexpr DXGI_FORMAT indexFormat = DXGI_FORMAT_R16_UINT;
 		// The indices start at the beginning of the buffer
 		constexpr unsigned int offset = 0;

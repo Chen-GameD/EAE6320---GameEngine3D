@@ -31,7 +31,7 @@ namespace eae6320
 		public:
 			// Interface
 			//==========
-			eae6320::cResult InitializeShadingData();
+			eae6320::cResult InitializeShadingData(const char* i_vertexShaderAddress, const char* i_fragmentShaderAddress);
 
 			void BindShadingData();
 
