@@ -230,7 +230,7 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 
 		uint16_t a[6] = {0,2,1,0,3,2};
 
-		if (!(result = s_mesh.InitializeGeometry(vertexData, a)))
+		if (!(result = s_mesh.InitializeGeometry(vertexData, a, 5, 7)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;

@@ -37,7 +37,7 @@ namespace eae6320
 #ifdef EAE6320_PLATFORM_GL
 			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[6]);
 #elif EAE6320_PLATFORM_D3D
-			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[]);
+			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount);
 #endif
 
 			eae6320::cResult CleanUp();

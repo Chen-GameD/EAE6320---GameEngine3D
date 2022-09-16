@@ -15,7 +15,7 @@
 // Initialize / Clean Up
 //----------------------
 
-eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[])
+eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount)
 {
 	auto result = eae6320::Results::Success;
 
@@ -66,7 +66,7 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics:
 		//	vertexData[5].z = i_vertexData[4].z;
 		//}
 
-		auto dataBufferSize = sizeof(i_vertexData);
+		auto dataBufferSize = sizeof(i_vertexData) * vertexCount;
 		EAE6320_ASSERT(dataBufferSize <= std::numeric_limits<decltype(D3D11_BUFFER_DESC::ByteWidth)>::max());
 		auto dataBufferDescription = [dataBufferSize]
 		{
@@ -102,7 +102,7 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics:
 		}
 
 		// Index Buffer
-		auto indexBufferSize = sizeof(i_indexArray);
+		auto indexBufferSize = sizeof(i_indexArray) * indexCount;
 		EAE6320_ASSERT(indexBufferSize <= std::numeric_limits<decltype(D3D11_BUFFER_DESC::ByteWidth)>::max());
 		m_indexCountToRender = (unsigned int)indexBufferSize;
 		auto indexBufferDescription = [indexBufferSize]
