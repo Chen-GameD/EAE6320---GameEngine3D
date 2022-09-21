@@ -15,7 +15,11 @@
 #elif EAE6320_PLATFORM_D3D
 	#include "cVertexFormat.h"
 	#include "sContext.h"
+	#include "cConstantBuffer.h"
 #endif
+
+#include <vector>
+
 
 namespace eae6320
 {
@@ -27,19 +31,16 @@ namespace eae6320
 			//==========
 
 		public:
+			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount);
 
-			//Temporarily default triangleCount = 2, vertexCountPerTriangle = 3, so vertexCount = triangleCount * vertexCountPerTriangle = 6;
-			//This will change in future...
-			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[6]);
-
-#ifdef EAE6320_PLATFORM_GL
 			eae6320::cResult CleanUp();
-#elif EAE6320_PLATFORM_D3D
-			void CleanUp();
-#endif // DEBUG
+
 			void DrawGeometry();
 
 		private:
+			// indexCountToRender size
+			unsigned int m_indexCountToRender = 0;
+
 #ifdef EAE6320_PLATFORM_GL
 			// Geometry Data for OpenGL
 			//--------------
@@ -48,6 +49,8 @@ namespace eae6320
 			GLuint m_vertexBufferId = 0;
 			// A vertex array encapsulates the vertex data as well as the vertex input layout
 			GLuint m_vertexArrayId = 0;
+			//An indext array encapsulates the index data as well as the index input layout
+			GLuint m_indexBufferId = 0;
 #elif EAE6320_PLATFORM_D3D
 			// Geometry Data for D3D
 			//--------------
@@ -56,6 +59,8 @@ namespace eae6320
 
 			// A vertex buffer holds the data for each vertex
 			ID3D11Buffer* m_vertexBuffer = nullptr;
+			// An index buffer holds the data for each triangle
+			ID3D11Buffer* m_indexBuffer = nullptr;
 #endif
 		};
 	}

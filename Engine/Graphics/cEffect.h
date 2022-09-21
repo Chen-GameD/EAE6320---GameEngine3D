@@ -31,14 +31,11 @@ namespace eae6320
 		public:
 			// Interface
 			//==========
-#ifdef EAE6320_PLATFORM_GL
-			eae6320::cResult CleanUp();
-#elif EAE6320_PLATFORM_D3D
-			void CleanUp();
-#endif // EAE6320_PLATFORM_GL
+			eae6320::cResult InitializeShadingData(const char* i_vertexShaderAddress, const char* i_fragmentShaderAddress);
+
 			void BindShadingData();
 
-			eae6320::cResult InitializeShadingData();
+			eae6320::cResult CleanUp();
 
 		private:
 			// Shading Data

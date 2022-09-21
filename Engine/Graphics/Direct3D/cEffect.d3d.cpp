@@ -4,23 +4,30 @@
 #include "Includes.h"
 #include "../cEffect.h"
 
+#include <Engine/Logging/Logging.h>
+
 // Implementation
 //===============
 
 // Initialize / Clean Up
 //----------------------
 
-eae6320::cResult eae6320::Graphics::cEffect::InitializeShadingData()
+eae6320::cResult eae6320::Graphics::cEffect::InitializeShadingData(const char* i_vertexShaderAddress, const char* i_fragmentShaderAddress)
 {
+	// how much memory the member variables take
+	Logging::OutputMessage("m_vertexShader takes : %d:", sizeof(m_vertexShader));
+	Logging::OutputMessage("m_fragmentShader takes : %d:", sizeof(m_fragmentShader));
+	Logging::OutputMessage("m_renderState takes : %d:", sizeof(m_renderState));
+
 	auto result = eae6320::Results::Success;
 
-	if (!(result = eae6320::Graphics::cShader::Load("data/Shaders/Vertex/standard.shader",
+	if (!(result = eae6320::Graphics::cShader::Load(i_vertexShaderAddress,
 		m_vertexShader, eae6320::Graphics::eShaderType::Vertex)))
 	{
 		EAE6320_ASSERTF(false, "Can't initialize shading data without vertex shader");
 		return result;
 	}
-	if (!(result = eae6320::Graphics::cShader::Load("data/Shaders/Fragment/myShader.shader",
+	if (!(result = eae6320::Graphics::cShader::Load(i_fragmentShaderAddress,
 		m_fragmentShader, eae6320::Graphics::eShaderType::Fragment)))
 	{
 		EAE6320_ASSERTF(false, "Can't initialize shading data without fragment shader");
@@ -48,8 +55,10 @@ eae6320::cResult eae6320::Graphics::cEffect::InitializeShadingData()
 	return result;
 }
 
-void eae6320::Graphics::cEffect::CleanUp()
+eae6320::cResult eae6320::Graphics::cEffect::CleanUp()
 {
+	auto result = Results::Success;
+
 	if (m_vertexShader)
 	{
 		m_vertexShader->DecrementReferenceCount();
@@ -60,6 +69,7 @@ void eae6320::Graphics::cEffect::CleanUp()
 		m_fragmentShader->DecrementReferenceCount();
 		m_fragmentShader = nullptr;
 	}
+	return result;
 }
 
 // Bind
