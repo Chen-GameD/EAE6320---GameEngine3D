@@ -55,6 +55,8 @@
       <Filter>Direct3D</Filter>
     </ClCompile>
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="cMesh.cpp" />
+    <ClCompile Include="cEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cConstantBuffer.h" />

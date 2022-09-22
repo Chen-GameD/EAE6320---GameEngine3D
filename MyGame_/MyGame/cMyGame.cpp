@@ -38,3 +38,8 @@ eae6320::cResult eae6320::cMyGame::CleanUp()
 	Logging::OutputMessage("MyGame is cleaned up!");
 	return Results::Success;
 }
+
+void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate)
+{
+	Graphics::SubmitBackBufferColor(1.0f, 1.0f, 0.0f, 1.0f);
+}

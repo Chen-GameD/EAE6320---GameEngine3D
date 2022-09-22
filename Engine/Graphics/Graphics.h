@@ -24,9 +24,19 @@
 
 namespace eae6320
 {
+	struct sDataBackBufferFormat
+	{
+		float R = 1.0f;
+		float G = 1.0f;
+		float B = 1.0f;
+		float A = 1.0f;
+	};
+
 	struct sDataRequiredToRenderAFrame
 	{
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
+		eae6320::sDataBackBufferFormat backBufferColor;
+		//float backBufferColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	};
 
 	namespace Graphics
@@ -41,6 +51,14 @@ namespace eae6320
 		// of how the application submits the total elapsed times
 		// for the frame currently being submitted
 		void SubmitElapsedTime( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_simulationTime );
+
+		//Submit back color data
+		//The constant passed in is four float type data, from left to right are r, g, b, a 
+		//r:red, 
+		//g:green, 
+		//b:blue, 
+		//a:alpha
+		void SubmitBackBufferColor(const float r, const float g, const float b, const float a);
 
 		// When the application is ready to submit data for a new frame
 		// it should call this before submitting anything

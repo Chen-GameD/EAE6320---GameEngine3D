@@ -28,7 +28,7 @@ void eae6320::Graphics::cView::CleanUp()
 // ClearImageBuffer / ClearDepthBuffer / UpdateFrameConstantBuffer / SwapFrontBuffer
 //----------------------
 
-void eae6320::Graphics::cView::ClearImageBuffer()
+void eae6320::Graphics::cView::ClearImageBuffer(sDataRequiredToRenderAFrame* s_dataBeingRenderedByRenderThread)
 {
 	// Every frame an entirely new image will be created.
 	// Before drawing anything, then, the previous image will be erased
@@ -36,7 +36,8 @@ void eae6320::Graphics::cView::ClearImageBuffer()
 	{
 		// Black is usually used
 		{
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			auto& backBufferColor = s_dataBeingRenderedByRenderThread->backBufferColor;
+			glClearColor(backBufferColor.R, backBufferColor.G, backBufferColor.B, backBufferColor.A);
 			EAE6320_ASSERT(glGetError() == GL_NO_ERROR);
 		}
 		{

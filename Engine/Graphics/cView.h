@@ -30,7 +30,7 @@ namespace eae6320
 			eae6320::cResult InitializeViews(const sInitializationParameters& i_initializationParameters);
 			void CleanUp();
 
-			void ClearImageBuffer();
+			void ClearImageBuffer(sDataRequiredToRenderAFrame* s_dataBeingRenderedByRenderThread);
 			void ClearDepthBuffer();
 			void UpdateFrameConstantBuffer(cConstantBuffer& s_constantBuffer_frame, sDataRequiredToRenderAFrame* s_dataBeingRenderedByRenderThread);
 			void SwapFrontBuffer();

@@ -51,11 +51,11 @@ namespace
 	eae6320::Concurrency::cEvent s_whenDataForANewFrameCanBeSubmittedFromApplicationThread;
 
 	//static mesh
-	eae6320::Graphics::cMesh s_mesh_1;
-	eae6320::Graphics::cMesh s_mesh_2;
+	eae6320::Graphics::cMesh* s_mesh_1;
+	eae6320::Graphics::cMesh* s_mesh_2;
 	//static effect
-	eae6320::Graphics::cEffect s_effect_1;
-	eae6320::Graphics::cEffect s_effect_2;
+	eae6320::Graphics::cEffect* s_effect_1;
+	eae6320::Graphics::cEffect* s_effect_2;
 }
 
 // Interface
@@ -70,6 +70,16 @@ void eae6320::Graphics::SubmitElapsedTime(const float i_elapsedSecondCount_syste
 	auto& constantData_frame = s_dataBeingSubmittedByApplicationThread->constantData_frame;
 	constantData_frame.g_elapsedSecondCount_systemTime = i_elapsedSecondCount_systemTime;
 	constantData_frame.g_elapsedSecondCount_simulationTime = i_elapsedSecondCount_simulationTime;
+}
+
+void eae6320::Graphics::SubmitBackBufferColor(const float r, const float g, const float b, const float a)
+{
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+	auto& backBufferColor = s_dataBeingSubmittedByApplicationThread->backBufferColor;
+	backBufferColor.R = r;
+	backBufferColor.G = g;
+	backBufferColor.B = b;
+	backBufferColor.A = a;
 }
 
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
@@ -117,7 +127,7 @@ void eae6320::Graphics::RenderFrame()
 	// Every frame an entirely new image will be created.
 	// Before drawing anything, then, the previous image will be erased
 	// by "clearing" the image buffer (filling it with a solid color)
-	s_view.ClearImageBuffer();
+	s_view.ClearImageBuffer(s_dataBeingRenderedByRenderThread);
 
 	// In addition to the color buffer there is also a hidden image called the "depth buffer"
 	// which is used to make it less important which order draw calls are made.
@@ -128,16 +138,16 @@ void eae6320::Graphics::RenderFrame()
 	s_view.UpdateFrameConstantBuffer(s_constantBuffer_frame, s_dataBeingRenderedByRenderThread);
 
 	// Bind the shading data
-	s_effect_1.BindShadingData();
+	s_effect_1->BindShadingData();
 
 	// Draw the geometry
-	s_mesh_1.DrawGeometry();
+	s_mesh_1->DrawGeometry();
 
 	// Bind the shading data
-	s_effect_2.BindShadingData();
+	s_effect_2->BindShadingData();
 
 	// Draw the geometry
-	s_mesh_2.DrawGeometry();
+	s_mesh_2->DrawGeometry();
 
 	// Everything has been drawn to the "back buffer", which is just an image in memory.
 	// In order to display it the contents of the back buffer must be "presented"
@@ -208,7 +218,12 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	{
 		const char* vertexShaderAddress_1 = "data/Shaders/Vertex/standard.shader";
 		const char* fragmentShaderAddress_1 = "data/Shaders/Fragment/myShader_1.shader";
-		if (!(result = s_effect_1.InitializeShadingData(vertexShaderAddress_1, fragmentShaderAddress_1)))
+		/*if (!(result = s_effect_1.InitializeShadingData(vertexShaderAddress_1, fragmentShaderAddress_1)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+			return result;
+		}*/
+		if (!(result = cEffect::CreateEffect(s_effect_1, vertexShaderAddress_1, fragmentShaderAddress_1)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
@@ -216,7 +231,12 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 
 		const char* vertexShaderAddress_2 = "data/Shaders/Vertex/standard.shader";
 		const char* fragmentShaderAddress_2 = "data/Shaders/Fragment/myShader_2.shader";
-		if (!(result = s_effect_2.InitializeShadingData(vertexShaderAddress_2, fragmentShaderAddress_2)))
+		/*if (!(result = s_effect_2.InitializeShadingData(vertexShaderAddress_2, fragmentShaderAddress_2)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+			return result;
+		}*/
+		if (!(result = cEffect::CreateEffect(s_effect_2, vertexShaderAddress_2, fragmentShaderAddress_2)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
@@ -251,11 +271,17 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 
 		uint16_t indexArray_1[6] = {0,1,2,0,2,3};
 
-		if (!(result = s_mesh_1.InitializeGeometry(vertexData_1, indexArray_1, 4, 6)))
+		if (!(result = cMesh::CreateMesh(s_mesh_1, vertexData_1, indexArray_1, 4, 6)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
 		}
+
+		/*if (!(result = s_mesh_1.InitializeGeometry(vertexData_1, indexArray_1, 4, 6)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			return result;
+		}*/
 
 		//Data input is temporarily hardcoded...
 		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_2[7];
@@ -293,11 +319,17 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 
 		uint16_t indexArray_2[15] = { 0,1,2,0,2,3,0,3,4,0,4,5,0,5,6 };
 
-		if (!(result = s_mesh_2.InitializeGeometry(vertexData_2, indexArray_2, 7, 15)))
+		if (!(result = cMesh::CreateMesh(s_mesh_2, vertexData_2, indexArray_2, 7, 15)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
 		}
+
+		/*if (!(result = s_mesh_2.InitializeGeometry(vertexData_2, indexArray_2, 7, 15)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			return result;
+		}*/
 
 		Logging::OutputMessage("A single mesh takes : %d:", sizeof(s_mesh_1));
 	}
@@ -311,13 +343,34 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 
 	s_view.CleanUp();
 
-	result = s_mesh_1.CleanUp();
+	if (s_mesh_1)
+	{
+		s_mesh_1->DecrementReferenceCount();
+		s_mesh_1 = nullptr;
+	}
+	if (s_mesh_2)
+	{
+		s_mesh_2->DecrementReferenceCount();
+		s_mesh_2 = nullptr;
+	}
+	if (s_effect_1)
+	{
+		s_effect_1->DecrementReferenceCount();
+		s_effect_1 = nullptr;
+	}
+	if (s_effect_2)
+	{
+		s_effect_2->DecrementReferenceCount();
+		s_effect_2 = nullptr;
+	}
 
-	result = s_effect_1.CleanUp();
+	//result = s_mesh_1->CleanUp();
 
-	result = s_mesh_2.CleanUp();
+	//result = s_effect_1.CleanUp();
 
-	result = s_effect_2.CleanUp();
+	//result = s_mesh_2->CleanUp();
+
+	//result = s_effect_2.CleanUp();
 
 	{
 		const auto result_constantBuffer_frame = s_constantBuffer_frame.CleanUp();
