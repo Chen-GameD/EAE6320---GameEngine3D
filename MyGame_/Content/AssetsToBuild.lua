@@ -12,5 +12,7 @@ return
 		{ path = "Shaders/Vertex/vertexInputLayout_mesh.shader", arguments = { "vertex" } },
 		{ path = "Shaders/Fragment/myShader_1.shader", arguments = { "fragment" } },
 		{ path = "Shaders/Fragment/myShader_2.shader", arguments = { "fragment" } },
+		{ path = "Shaders/Fragment/myShader_3.shader", arguments = { "fragment" } },
+		{ path = "Shaders/Fragment/myShader_4.shader", arguments = { "fragment" } },
 	},
 }

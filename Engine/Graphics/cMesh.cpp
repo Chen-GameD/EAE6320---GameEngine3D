@@ -5,6 +5,7 @@
 
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Logging/Logging.h>
+#include <new>
 
 eae6320::cResult eae6320::Graphics::cMesh::CreateMesh(cMesh*& o_mesh, eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount)
 {

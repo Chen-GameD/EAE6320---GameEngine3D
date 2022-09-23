@@ -76,6 +76,7 @@ namespace eae6320
 		//----
 
 		void UpdateBasedOnInput() final;
+		void UpdateSimulationBasedOnInput();
 
 		// Initialize / Clean Up
 		//----------------------
