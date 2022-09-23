@@ -58,13 +58,14 @@ namespace eae6320
 			eae6320::Graphics::cShader* m_fragmentShader = nullptr;
 
 			eae6320::Graphics::cRenderState m_renderState;
+			EAE6320_ASSETS_DECLAREREFERENCECOUNT()
 
 #ifdef EAE6320_PLATFORM_GL
 			GLuint m_programId = 0;
 #endif // EAE6320_PLATFORM_GL
 
 			//Reference Counting
-			EAE6320_ASSETS_DECLAREREFERENCECOUNT()
+			
 
 			//Constructor / Destructor
 			cEffect() = default;

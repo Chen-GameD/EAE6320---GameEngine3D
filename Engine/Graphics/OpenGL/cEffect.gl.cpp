@@ -20,6 +20,7 @@ eae6320::cResult eae6320::Graphics::cEffect::InitializeShadingData(const char* i
 	Logging::OutputMessage("m_fragmentShader takes : %d:", sizeof(m_fragmentShader));
 	Logging::OutputMessage("m_renderState takes : %d:", sizeof(m_renderState));
 	Logging::OutputMessage("m_programId takes : %d:", sizeof(m_programId));
+	Logging::OutputMessage("m_refer takes : %d:", sizeof(m_referenceCount));
 
 	auto result = eae6320::Results::Success;
 

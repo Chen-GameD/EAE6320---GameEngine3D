@@ -72,6 +72,11 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 
 eae6320::cResult eae6320::cMyGame::Initialize()
 {
+	int a = sizeof(eae6320::Graphics::cMesh);
+	int b = sizeof(eae6320::Graphics::cEffect);
+	int c = sizeof(eae6320::sDataRequiredToRenderAFrame);
+	int d = sizeof(eae6320::sDataRequiredToRenderAFrame::gameObjectArray);
+
 	auto result = Results::Success;
 
 	// Initialize the shading data
@@ -127,9 +132,6 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
 		}
-
-
-		Logging::OutputMessage("A single effect takes : %d:", sizeof(m_gameObjectData_1[1].m_Effect));
 	}
 
 	// Initialize the geometry
@@ -272,8 +274,6 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
-
-		Logging::OutputMessage("A single mesh takes : %d:", sizeof(m_gameObjectData_1[0].m_Mesh));
 	}
 
 	m_gameObjectData_submit = m_gameObjectData_1;
