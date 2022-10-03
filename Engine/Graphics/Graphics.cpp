@@ -88,6 +88,14 @@ void eae6320::Graphics::SubmitGameObjectData(GameObjectData*& i_gameObjectArray,
 	s_dataBeingSubmittedByApplicationThread->numOfGameObject = i_numOfGameObject;
 }
 
+void eae6320::Graphics::SubmitCamera(Camera i_camera)
+{
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+	auto& constantData_frame = s_dataBeingSubmittedByApplicationThread->constantData_frame;
+	constantData_frame.g_transform_worldToCamera = Math::cMatrix_transformation::CreateWorldToCameraTransform(i_camera.m_RigidBodyState.orientation, i_camera.m_RigidBodyState.position);
+	constantData_frame.g_transform_cameraToProjected = Math::cMatrix_transformation::CreateCameraToProjectedTransform_perspective(i_camera.m_verticalFieldOfView_inRadians, i_camera.m_aspectRatio, i_camera.m_z_nearPlane, i_camera.m_z_farPlane);
+}
+
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
 {
 	return Concurrency::WaitForEvent(s_whenDataForANewFrameCanBeSubmittedFromApplicationThread, i_timeToWait_inMilliseconds);

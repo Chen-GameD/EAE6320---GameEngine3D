@@ -20,6 +20,9 @@ namespace
 	size_t m_numOfGameObject_submit = 0;
 	eae6320::GameObjectData* m_gameObjectData_1 = new eae6320::GameObjectData[2];
 	eae6320::GameObjectData* m_gameObjectData_2 = new eae6320::GameObjectData[2];
+
+	//static camera
+	eae6320::Camera m_camera;
 }
 
 // Inherited Implementation
@@ -37,6 +40,11 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 		const auto result = Exit( EXIT_SUCCESS );
 		EAE6320_ASSERT( result );
 	}
+}
+
+void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
+{
+	m_camera.m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnInput()
@@ -64,6 +72,22 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	else
 	{
 		m_numOfGameObject_submit = 2;
+	}
+
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up) || UserInput::IsKeyPressed(UserInput::KeyCodes::Down))
+	{
+		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up))
+		{
+			m_camera.m_RigidBodyState.velocity = Math::sVector(0, 0, 0.1f);
+		}
+		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Down))
+		{
+			m_camera.m_RigidBodyState.velocity = Math::sVector(0, 0, -0.1f);
+		}
+	}
+	else
+	{ 
+		m_camera.m_RigidBodyState.velocity = Math::sVector(0, 0, 0);
 	}
 }
 
@@ -276,6 +300,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		}
 	}
 
+	// Initialize the camera
+	{
+		m_camera.m_RigidBodyState.position.x = 0;
+		m_camera.m_RigidBodyState.position.y = 0;
+		m_camera.m_RigidBodyState.position.z = 10;
+	}
+
 	m_gameObjectData_submit = m_gameObjectData_1;
 	m_numOfGameObject_submit = 2;
 
@@ -325,4 +356,9 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	// Submit game object data
 	Graphics::SubmitGameObjectData(m_gameObjectData_submit, m_numOfGameObject_submit);
+
+	// Submit camera
+	m_camera.m_RigidBodyState.position = m_camera.m_RigidBodyState.PredictFuturePosition(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	m_camera.m_RigidBodyState.orientation = m_camera.m_RigidBodyState.PredictFutureOrientation(i_elapsedSecondCount_sinceLastSimulationUpdate);
+	Graphics::SubmitCamera(m_camera);
 }

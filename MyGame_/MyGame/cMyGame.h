@@ -77,6 +77,7 @@ namespace eae6320
 
 		void UpdateBasedOnInput() final;
 		void UpdateSimulationBasedOnInput();
+		void UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate);
 
 		// Initialize / Clean Up
 		//----------------------

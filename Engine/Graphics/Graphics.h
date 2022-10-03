@@ -12,6 +12,8 @@
 
 #include <cstdint>
 #include <Engine/Results/Results.h>
+#include <Engine/Physics/sRigidBodyState.h>
+#include <Engine/Math/Functions.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
@@ -37,6 +39,15 @@ namespace eae6320
 		class cMesh;
 		class cEffect;
 	}
+
+	struct Camera
+	{
+		Physics::sRigidBodyState m_RigidBodyState;
+		float m_verticalFieldOfView_inRadians = Math::ConvertDegreesToRadians(45);
+		float m_aspectRatio = 1.0f;
+		float m_z_nearPlane = 0.1f;
+		float m_z_farPlane = 100;
+	};
 	
 	struct GameObjectData
 	{
@@ -92,6 +103,8 @@ namespace eae6320
 		// i_gameObjectArray should be all the (mesh, effect) pair that will be render at next frame
 		// i_numOfGameObject will be the number of the (mesh, effect) pair
 		void SubmitGameObjectData(GameObjectData*& i_gameObjectArray, size_t i_numOfGameObject);
+
+		void SubmitCamera(Camera i_camera);
 
 		// When the application is ready to submit data for a new frame
 		// it should call this before submitting anything
