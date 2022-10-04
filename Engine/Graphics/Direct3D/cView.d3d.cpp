@@ -221,12 +221,12 @@ void eae6320::Graphics::cView::ClearDepthBuffer()
 void eae6320::Graphics::cView::UpdateFrameConstantBuffer(cConstantBuffer& s_constantBuffer_frame, sDataRequiredToRenderAFrame* s_dataBeingRenderedByRenderThread)
 {
 	EAE6320_ASSERT(s_dataBeingRenderedByRenderThread);
-	auto* const dataRequiredToRenderFrame = s_dataBeingRenderedByRenderThread;
+	//auto* const dataRequiredToRenderFrame = s_dataBeingRenderedByRenderThread;
 
 	// Update the frame constant buffer
 	{
 		// Copy the data from the system memory that the application owns to GPU memory
-		auto& constantData_frame = dataRequiredToRenderFrame->constantData_frame;
+		auto& constantData_frame = s_dataBeingRenderedByRenderThread->constantData_frame;
 		s_constantBuffer_frame.Update(&constantData_frame);
 	}
 }
