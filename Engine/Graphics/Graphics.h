@@ -12,6 +12,8 @@
 
 #include <cstdint>
 #include <Engine/Results/Results.h>
+#include <Engine/Physics/sRigidBodyState.h>
+#include <Engine/Math/Functions.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
@@ -37,11 +39,22 @@ namespace eae6320
 		class cMesh;
 		class cEffect;
 	}
+
+	struct Camera
+	{
+		Physics::sRigidBodyState m_RigidBodyState;
+		float m_verticalFieldOfView_inRadians = Math::ConvertDegreesToRadians(45);
+		float m_aspectRatio = 1.0f;
+		float m_z_nearPlane = 0.1f;
+		float m_z_farPlane = 100;
+	};
 	
 	struct GameObjectData
 	{
 		eae6320::Graphics::cMesh* m_Mesh = nullptr;
 		eae6320::Graphics::cEffect* m_Effect = nullptr;
+		//rigidbody
+		eae6320::Physics::sRigidBodyState m_RigidBodyState;
 	};
 
 	struct sDataRequiredToRenderAFrame
@@ -56,6 +69,7 @@ namespace eae6320
 		// Struct Members
 		// -----------------------
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
+		eae6320::Graphics::ConstantBufferFormats::sDrawCall constantData_drawCall[maxNumOfGameObject];
 
 		// Background color data
 		eae6320::sDataBackBufferFormat backBufferColor;
@@ -91,7 +105,9 @@ namespace eae6320
 		// Submit game object data
 		// i_gameObjectArray should be all the (mesh, effect) pair that will be render at next frame
 		// i_numOfGameObject will be the number of the (mesh, effect) pair
-		void SubmitGameObjectData(GameObjectData*& i_gameObjectArray, size_t i_numOfGameObject);
+		void SubmitGameObjectData(GameObjectData*& i_gameObjectArray, size_t i_numOfGameObject, const float i_elapsedSecondCount_sinceLastSimulationUpdate);
+
+		void SubmitCamera(Camera& i_camera, const float i_elapsedSecondCount_sinceLastSimulationUpdate);
 
 		// When the application is ready to submit data for a new frame
 		// it should call this before submitting anything

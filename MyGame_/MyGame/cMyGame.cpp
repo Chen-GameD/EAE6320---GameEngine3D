@@ -20,6 +20,9 @@ namespace
 	size_t m_numOfGameObject_submit = 0;
 	eae6320::GameObjectData* m_gameObjectData_1 = new eae6320::GameObjectData[2];
 	eae6320::GameObjectData* m_gameObjectData_2 = new eae6320::GameObjectData[2];
+
+	//static camera
+	eae6320::Camera m_camera;
 }
 
 // Inherited Implementation
@@ -39,8 +42,51 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 	}
 }
 
+void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
+{
+	m_camera.m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
+	m_gameObjectData_1[0].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
+	m_gameObjectData_1[1].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
+	m_gameObjectData_2[0].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
+	m_gameObjectData_2[1].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
+}
+
 void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 {
+	// Controller
+	if (UserInput::IsKeyPressed('W') ||
+		UserInput::IsKeyPressed('S') ||
+		UserInput::IsKeyPressed('A') ||
+		UserInput::IsKeyPressed('D'))
+	{
+		if (UserInput::IsKeyPressed('W'))
+		{
+			m_gameObjectData_1[0].m_RigidBodyState.velocity = Math::sVector(0, 1, 0);
+			m_gameObjectData_2[0].m_RigidBodyState.velocity = Math::sVector(0, 1, 0);
+		}
+		if (UserInput::IsKeyPressed('S'))
+		{
+			m_gameObjectData_1[0].m_RigidBodyState.velocity = Math::sVector(0, -1, 0);
+			m_gameObjectData_2[0].m_RigidBodyState.velocity = Math::sVector(0, -1, 0);
+		}
+		if (UserInput::IsKeyPressed('A'))
+		{
+			m_gameObjectData_1[0].m_RigidBodyState.velocity = Math::sVector(-1, 0, 0);
+			m_gameObjectData_2[0].m_RigidBodyState.velocity = Math::sVector(-1, 0, 0);
+		}
+		if (UserInput::IsKeyPressed('D'))
+		{
+			m_gameObjectData_1[0].m_RigidBodyState.velocity = Math::sVector(1, 0, 0);
+			m_gameObjectData_2[0].m_RigidBodyState.velocity = Math::sVector(1, 0, 0);
+		}
+	}
+	else
+	{
+		m_gameObjectData_1[0].m_RigidBodyState.velocity = Math::sVector(0, 0, 0);
+		m_gameObjectData_2[0].m_RigidBodyState.velocity = Math::sVector(0, 0, 0);
+	}
+
+
 	// Is the user pressing the Space key?
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space))
 	{
@@ -64,6 +110,34 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	else
 	{
 		m_numOfGameObject_submit = 2;
+	}
+
+	// Camera movement
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up) || 
+		UserInput::IsKeyPressed(UserInput::KeyCodes::Down) || 
+		UserInput::IsKeyPressed(UserInput::KeyCodes::Left) || 
+		UserInput::IsKeyPressed(UserInput::KeyCodes::Right))
+	{
+		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up))
+		{
+			m_camera.m_RigidBodyState.velocity = Math::sVector(0, 0, 0.1f);
+		}
+		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Down))
+		{
+			m_camera.m_RigidBodyState.velocity = Math::sVector(0, 0, -0.1f);
+		}
+		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left))
+		{
+			m_camera.m_RigidBodyState.velocity = Math::sVector(-0.1f, 0, 0);
+		}
+		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right))
+		{
+			m_camera.m_RigidBodyState.velocity = Math::sVector(0.1f, 0, 0);
+		}
+	}
+	else
+	{ 
+		m_camera.m_RigidBodyState.velocity = Math::sVector(0, 0, 0);
 	}
 }
 
@@ -276,6 +350,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		}
 	}
 
+	// Initialize the camera
+	{
+		m_camera.m_RigidBodyState.position.x = 0;
+		m_camera.m_RigidBodyState.position.y = 0;
+		m_camera.m_RigidBodyState.position.z = 10;
+	}
+
 	m_gameObjectData_submit = m_gameObjectData_1;
 	m_numOfGameObject_submit = 2;
 
@@ -324,5 +405,8 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	Graphics::SubmitBackBufferColor(1.0f, 1.0f, 0.0f, 1.0f);
 
 	// Submit game object data
-	Graphics::SubmitGameObjectData(m_gameObjectData_submit, m_numOfGameObject_submit);
+	Graphics::SubmitGameObjectData(m_gameObjectData_submit, m_numOfGameObject_submit, i_elapsedSecondCount_sinceLastSimulationUpdate);
+
+	// Submit camera
+	Graphics::SubmitCamera(m_camera, i_elapsedSecondCount_sinceLastSimulationUpdate);
 }
