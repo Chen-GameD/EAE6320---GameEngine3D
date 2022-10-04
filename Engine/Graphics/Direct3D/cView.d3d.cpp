@@ -183,7 +183,7 @@ void eae6320::Graphics::cView::CleanUp()
 // ClearImageBuffer / ClearDepthBuffer / UpdateFrameConstantBuffer / SwapFrontBuffer
 //----------------------
 
-void eae6320::Graphics::cView::ClearImageBuffer()
+void eae6320::Graphics::cView::ClearImageBuffer(sDataRequiredToRenderAFrame* s_dataBeingRenderedByRenderThread)
 {
 	auto* const direct3dImmediateContext = sContext::g_context.direct3dImmediateContext;
 	EAE6320_ASSERT(direct3dImmediateContext);
@@ -195,7 +195,8 @@ void eae6320::Graphics::cView::ClearImageBuffer()
 		EAE6320_ASSERT(m_renderTargetView);
 
 		// Black is usually used
-		constexpr float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		auto& backBufferColor = s_dataBeingRenderedByRenderThread->backBufferColor;
+		float clearColor[4] = { backBufferColor.R, backBufferColor.G, backBufferColor.B, backBufferColor.A };
 		direct3dImmediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	}
 }

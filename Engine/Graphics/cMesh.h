@@ -9,16 +9,16 @@
 //=========
 
 #include "VertexFormats.h"
+//#include <Engine/Assets/ReferenceCountedAssets.h>
 
 #ifdef EAE6320_PLATFORM_GL
 	#include "OpenGL/Includes.h"
+	#include <Engine/Assets/ReferenceCountedAssets.h>
 #elif EAE6320_PLATFORM_D3D
 	#include "cVertexFormat.h"
 	#include "sContext.h"
 	#include "cConstantBuffer.h"
 #endif
-
-#include <vector>
 
 
 namespace eae6320
@@ -31,15 +31,30 @@ namespace eae6320
 			//==========
 
 		public:
+
+			static cResult CreateMesh(cMesh*& o_mesh, eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount);
+
+			//eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount);
+
+			//eae6320::cResult CleanUp();
+
+			void DrawGeometry();
+
+			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS()
+
+			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cMesh)
+
+		private:
+
 			eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount);
 
 			eae6320::cResult CleanUp();
 
-			void DrawGeometry();
-
 		private:
 			// indexCountToRender size
 			unsigned int m_indexCountToRender = 0;
+			//Reference Counting
+			EAE6320_ASSETS_DECLAREREFERENCECOUNT()
 
 #ifdef EAE6320_PLATFORM_GL
 			// Geometry Data for OpenGL
@@ -62,6 +77,10 @@ namespace eae6320
 			// An index buffer holds the data for each triangle
 			ID3D11Buffer* m_indexBuffer = nullptr;
 #endif
+
+			//Constructor / Destructor
+			cMesh() = default;
+			~cMesh();
 		};
 	}
 }

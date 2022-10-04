@@ -24,9 +24,47 @@
 
 namespace eae6320
 {
+	struct sDataBackBufferFormat
+	{
+		float R = 1.0f;
+		float G = 1.0f;
+		float B = 1.0f;
+		float A = 1.0f;
+	};
+
+	namespace Graphics
+	{
+		class cMesh;
+		class cEffect;
+	}
+	
+	struct GameObjectData
+	{
+		eae6320::Graphics::cMesh* m_Mesh = nullptr;
+		eae6320::Graphics::cEffect* m_Effect = nullptr;
+	};
+
 	struct sDataRequiredToRenderAFrame
 	{
+		// Static const variables
+		// -----------------------
+		// The max number of game object that graphics can render at a frame, 
+		// This can be change due to different platform,
+		// But we'll stay with this for this project.
+		static const uint16_t maxNumOfGameObject = 1000;
+
+		// Struct Members
+		// -----------------------
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
+
+		// Background color data
+		eae6320::sDataBackBufferFormat backBufferColor;
+
+		// A game object array that holds all gameobject's data
+		GameObjectData* gameObjectArray[maxNumOfGameObject];
+
+		// Number of game object that will be render at this frame
+		size_t numOfGameObject;
 	};
 
 	namespace Graphics
@@ -41,6 +79,19 @@ namespace eae6320
 		// of how the application submits the total elapsed times
 		// for the frame currently being submitted
 		void SubmitElapsedTime( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_simulationTime );
+
+		// Submit back color data
+		// The constant passed in is four float type data, from left to right are r, g, b, a 
+		// r:red, 
+		// g:green, 
+		// b:blue, 
+		// a:alpha
+		void SubmitBackBufferColor(const float r, const float g, const float b, const float a);
+
+		// Submit game object data
+		// i_gameObjectArray should be all the (mesh, effect) pair that will be render at next frame
+		// i_numOfGameObject will be the number of the (mesh, effect) pair
+		void SubmitGameObjectData(GameObjectData*& i_gameObjectArray, size_t i_numOfGameObject);
 
 		// When the application is ready to submit data for a new frame
 		// it should call this before submitting anything

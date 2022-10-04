@@ -3,14 +3,16 @@
 
 #include "Graphics.h"
 
-#include "cMesh.h"
-#include "cEffect.h"
 #include "cView.h"
 
 #include <Engine/Concurrency/cEvent.h>
+#include <Engine/Asserts/Asserts.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/UserOutput/UserOutput.h>
 #include "sContext.h"
+
+#include "cMesh.h"
+#include "cEffect.h"
 
 // Static Data
 //============
@@ -49,13 +51,6 @@ namespace
 	// and the application loop thread can start submitting data for the following frame
 	// (the application loop thread waits for the signal)
 	eae6320::Concurrency::cEvent s_whenDataForANewFrameCanBeSubmittedFromApplicationThread;
-
-	//static mesh
-	eae6320::Graphics::cMesh s_mesh_1;
-	eae6320::Graphics::cMesh s_mesh_2;
-	//static effect
-	eae6320::Graphics::cEffect s_effect_1;
-	eae6320::Graphics::cEffect s_effect_2;
 }
 
 // Interface
@@ -70,6 +65,27 @@ void eae6320::Graphics::SubmitElapsedTime(const float i_elapsedSecondCount_syste
 	auto& constantData_frame = s_dataBeingSubmittedByApplicationThread->constantData_frame;
 	constantData_frame.g_elapsedSecondCount_systemTime = i_elapsedSecondCount_systemTime;
 	constantData_frame.g_elapsedSecondCount_simulationTime = i_elapsedSecondCount_simulationTime;
+}
+
+void eae6320::Graphics::SubmitBackBufferColor(const float r, const float g, const float b, const float a)
+{
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+	auto& backBufferColor = s_dataBeingSubmittedByApplicationThread->backBufferColor;
+	backBufferColor.R = r;
+	backBufferColor.G = g;
+	backBufferColor.B = b;
+	backBufferColor.A = a;
+}
+
+void eae6320::Graphics::SubmitGameObjectData(GameObjectData*& i_gameObjectArray, size_t i_numOfGameObject)
+{
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+	EAE6320_ASSERT(i_numOfGameObject <= sDataRequiredToRenderAFrame::maxNumOfGameObject);
+	for (size_t i = 0; i < i_numOfGameObject; i++)
+	{
+		s_dataBeingSubmittedByApplicationThread->gameObjectArray[i] = &i_gameObjectArray[i];
+	}
+	s_dataBeingSubmittedByApplicationThread->numOfGameObject = i_numOfGameObject;
 }
 
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
@@ -117,7 +133,7 @@ void eae6320::Graphics::RenderFrame()
 	// Every frame an entirely new image will be created.
 	// Before drawing anything, then, the previous image will be erased
 	// by "clearing" the image buffer (filling it with a solid color)
-	s_view.ClearImageBuffer();
+	s_view.ClearImageBuffer(s_dataBeingRenderedByRenderThread);
 
 	// In addition to the color buffer there is also a hidden image called the "depth buffer"
 	// which is used to make it less important which order draw calls are made.
@@ -127,17 +143,13 @@ void eae6320::Graphics::RenderFrame()
 	//// Update the frame constant buffer
 	s_view.UpdateFrameConstantBuffer(s_constantBuffer_frame, s_dataBeingRenderedByRenderThread);
 
-	// Bind the shading data
-	s_effect_1.BindShadingData();
-
-	// Draw the geometry
-	s_mesh_1.DrawGeometry();
-
-	// Bind the shading data
-	s_effect_2.BindShadingData();
-
-	// Draw the geometry
-	s_mesh_2.DrawGeometry();
+	for (size_t i = 0; i < s_dataBeingRenderedByRenderThread->numOfGameObject; i++)
+	{
+		// Bind the shading data
+		s_dataBeingRenderedByRenderThread->gameObjectArray[i]->m_Effect->BindShadingData();
+		// Draw the geometry
+		s_dataBeingRenderedByRenderThread->gameObjectArray[i]->m_Mesh->DrawGeometry();
+	}
 
 	// Everything has been drawn to the "back buffer", which is just an image in memory.
 	// In order to display it the contents of the back buffer must be "presented"
@@ -150,6 +162,16 @@ void eae6320::Graphics::RenderFrame()
 	{
 		// (At this point in the class there isn't anything that needs to be cleaned up)
 		//dataRequiredToRenderFrame	// TODO
+
+		for (size_t i = 0; i < s_dataBeingRenderedByRenderThread->numOfGameObject; i++)
+		{
+			if (s_dataBeingRenderedByRenderThread->gameObjectArray[i])
+			{
+				s_dataBeingRenderedByRenderThread->gameObjectArray[i] = nullptr;
+			}
+		}
+
+		s_dataBeingRenderedByRenderThread->numOfGameObject = 0;
 	}
 }
 
@@ -204,103 +226,6 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			return result;
 		}
 	}
-	// Initialize the shading data
-	{
-		const char* vertexShaderAddress_1 = "data/Shaders/Vertex/standard.shader";
-		const char* fragmentShaderAddress_1 = "data/Shaders/Fragment/myShader_1.shader";
-		if (!(result = s_effect_1.InitializeShadingData(vertexShaderAddress_1, fragmentShaderAddress_1)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}
-
-		const char* vertexShaderAddress_2 = "data/Shaders/Vertex/standard.shader";
-		const char* fragmentShaderAddress_2 = "data/Shaders/Fragment/myShader_2.shader";
-		if (!(result = s_effect_2.InitializeShadingData(vertexShaderAddress_2, fragmentShaderAddress_2)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}
-
-
-		Logging::OutputMessage("A single effect takes : %d:", sizeof(s_effect_1));
-	}
-	// Initialize the geometry
-	{
-		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_1[4];
-		{
-			// OpenGL is right-handed
-
-			vertexData_1[0].x = 0.0f;
-			vertexData_1[0].y = 0.0f;
-			vertexData_1[0].z = 0.0f;
-
-			vertexData_1[1].x = 1.0f;
-			vertexData_1[1].y = 0.0f;
-			vertexData_1[1].z = 0.0f;
-
-			vertexData_1[2].x = 1.0f;
-			vertexData_1[2].y = 1.0f;
-			vertexData_1[2].z = 0.0f;
-
-			vertexData_1[3].x = 0.0f;
-			vertexData_1[3].y = 1.0f;
-			vertexData_1[3].z = 0.0f;
-		}
-
-		uint16_t indexArray_1[6] = {0,1,2,0,2,3};
-
-		if (!(result = s_mesh_1.InitializeGeometry(vertexData_1, indexArray_1, 4, 6)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-			return result;
-		}
-
-		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_2[7];
-		{
-			// OpenGL is right-handed
-
-			vertexData_2[0].x = 0.0f;
-			vertexData_2[0].y = 0.0f;
-			vertexData_2[0].z = 0.0f;
-
-			vertexData_2[1].x = 0.0f;
-			vertexData_2[1].y = 1.0f;
-			vertexData_2[1].z = 0.0f;
-
-			vertexData_2[2].x = -1.0f;
-			vertexData_2[2].y = 1.0f;
-			vertexData_2[2].z = 0.0f;
-
-			vertexData_2[3].x = -1.0f;
-			vertexData_2[3].y = 0.0f;
-			vertexData_2[3].z = 0.0f;
-
-			vertexData_2[4].x = 0.0f;
-			vertexData_2[4].y = -1.0f;
-			vertexData_2[4].z = 0.0f;
-
-			vertexData_2[5].x = 1.0f;
-			vertexData_2[5].y = -1.0f;
-			vertexData_2[5].z = 0.0f;
-
-			vertexData_2[6].x = 1.0f;
-			vertexData_2[6].y = 0.0f;
-			vertexData_2[6].z = 0.0f;
-		}
-
-		uint16_t indexArray_2[15] = { 0,1,2,0,2,3,0,3,4,0,4,5,0,5,6 };
-
-		if (!(result = s_mesh_2.InitializeGeometry(vertexData_2, indexArray_2, 7, 15)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-			return result;
-		}
-
-		Logging::OutputMessage("A single mesh takes : %d:", sizeof(s_mesh_1));
-	}
 
 	return result;
 }
@@ -310,14 +235,52 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	auto result = Results::Success;
 
 	s_view.CleanUp();
+	
+	if (s_dataBeingSubmittedByApplicationThread)
+	{
+		for (size_t i = 0; i < s_dataBeingSubmittedByApplicationThread->numOfGameObject; i++)
+		{
+			if (s_dataBeingSubmittedByApplicationThread->gameObjectArray[i])
+			{
+				if (s_dataBeingSubmittedByApplicationThread->gameObjectArray[i]->m_Mesh)
+				{
+					s_dataBeingSubmittedByApplicationThread->gameObjectArray[i]->m_Mesh->DecrementReferenceCount();
+					s_dataBeingSubmittedByApplicationThread->gameObjectArray[i]->m_Mesh = nullptr;
+				}
+			}
+			if (s_dataBeingSubmittedByApplicationThread->gameObjectArray[i])
+			{
+				if (s_dataBeingSubmittedByApplicationThread->gameObjectArray[i]->m_Effect)
+				{
+					s_dataBeingSubmittedByApplicationThread->gameObjectArray[i]->m_Effect->DecrementReferenceCount();
+					s_dataBeingSubmittedByApplicationThread->gameObjectArray[i]->m_Effect = nullptr;
+				}
+			}
+		}
+	}
 
-	result = s_mesh_1.CleanUp();
-
-	result = s_effect_1.CleanUp();
-
-	result = s_mesh_2.CleanUp();
-
-	result = s_effect_2.CleanUp();
+	if (s_dataBeingRenderedByRenderThread)
+	{
+		for (size_t i = 0; i < s_dataBeingRenderedByRenderThread->numOfGameObject; i++)
+		{
+			if (s_dataBeingRenderedByRenderThread->gameObjectArray[i])
+			{
+				if (s_dataBeingRenderedByRenderThread->gameObjectArray[i]->m_Mesh)
+				{
+					s_dataBeingRenderedByRenderThread->gameObjectArray[i]->m_Mesh->DecrementReferenceCount();
+					s_dataBeingRenderedByRenderThread->gameObjectArray[i]->m_Mesh = nullptr;
+				}
+			}
+			if (s_dataBeingRenderedByRenderThread->gameObjectArray[i])
+			{
+				if (s_dataBeingRenderedByRenderThread->gameObjectArray[i]->m_Effect)
+				{
+					s_dataBeingRenderedByRenderThread->gameObjectArray[i]->m_Effect->DecrementReferenceCount();
+					s_dataBeingRenderedByRenderThread->gameObjectArray[i]->m_Effect = nullptr;
+				}
+			}
+		}
+	}
 
 	{
 		const auto result_constantBuffer_frame = s_constantBuffer_frame.CleanUp();

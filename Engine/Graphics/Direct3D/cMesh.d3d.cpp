@@ -38,6 +38,7 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics:
 	Logging::OutputMessage("m_vertexBuffer takes : %d:", sizeof(m_vertexBuffer));
 	Logging::OutputMessage("m_indexBuffer takes : %d:", sizeof(m_indexBuffer));
 	Logging::OutputMessage("m_indexCountToRender takes : %d:", sizeof(m_indexCountToRender));
+	Logging::OutputMessage("m_refer takes : %d:", sizeof(m_referenceCount));
 
 	auto result = eae6320::Results::Success;
 

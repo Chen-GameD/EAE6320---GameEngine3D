@@ -31,9 +31,22 @@ namespace eae6320
 		public:
 			// Interface
 			//==========
-			eae6320::cResult InitializeShadingData(const char* i_vertexShaderAddress, const char* i_fragmentShaderAddress);
+
+			static cResult CreateEffect(cEffect*& o_effect, const char* i_vertexShaderAddress, const char* i_fragmentShaderAddress);
+
+			//eae6320::cResult InitializeShadingData(const char* i_vertexShaderAddress, const char* i_fragmentShaderAddress);
 
 			void BindShadingData();
+
+			//eae6320::cResult CleanUp();
+
+			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS()
+
+			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cEffect)
+
+		private:
+
+			eae6320::cResult InitializeShadingData(const char* i_vertexShaderAddress, const char* i_fragmentShaderAddress);
 
 			eae6320::cResult CleanUp();
 
@@ -45,10 +58,18 @@ namespace eae6320
 			eae6320::Graphics::cShader* m_fragmentShader = nullptr;
 
 			eae6320::Graphics::cRenderState m_renderState;
+			EAE6320_ASSETS_DECLAREREFERENCECOUNT()
 
 #ifdef EAE6320_PLATFORM_GL
 			GLuint m_programId = 0;
 #endif // EAE6320_PLATFORM_GL
+
+			//Reference Counting
+			
+
+			//Constructor / Destructor
+			cEffect() = default;
+			~cEffect();
 		};
 	}
 }
