@@ -272,6 +272,17 @@ NewAssetTypeInfo( "shaders",
 	}
 )
 
+-- Mesh Asset Type
+--------------------
+
+NewAssetTypeInfo( "meshes",
+	{
+		GetBuilderRelativePath = function()
+			return "MeshBuilder.exe"
+		end
+	}
+)
+
 -- Local Function Definitions
 --===========================
 

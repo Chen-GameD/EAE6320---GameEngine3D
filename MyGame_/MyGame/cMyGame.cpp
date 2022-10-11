@@ -210,141 +210,142 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	// Initialize the geometry
 	{
-		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_1[4];
+		////Data input is temporarily hardcoded...
+		//eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_1[4];
+		//{
+		//	// OpenGL is right-handed
+
+		//	vertexData_1[0].x = 0.0f;
+		//	vertexData_1[0].y = 0.0f;
+		//	vertexData_1[0].z = 0.0f;
+
+		//	vertexData_1[1].x = 1.0f;
+		//	vertexData_1[1].y = 0.0f;
+		//	vertexData_1[1].z = 0.0f;
+
+		//	vertexData_1[2].x = 1.0f;
+		//	vertexData_1[2].y = 1.0f;
+		//	vertexData_1[2].z = 0.0f;
+
+		//	vertexData_1[3].x = 0.0f;
+		//	vertexData_1[3].y = 1.0f;
+		//	vertexData_1[3].z = 0.0f;
+		//}
+
+		//uint16_t indexArray_1[6] = { 0,1,2,0,2,3 };
+
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_1[0].m_Mesh, "data/meshes/Mesh_1.lua")))
 		{
-			// OpenGL is right-handed
-
-			vertexData_1[0].x = 0.0f;
-			vertexData_1[0].y = 0.0f;
-			vertexData_1[0].z = 0.0f;
-
-			vertexData_1[1].x = 1.0f;
-			vertexData_1[1].y = 0.0f;
-			vertexData_1[1].z = 0.0f;
-
-			vertexData_1[2].x = 1.0f;
-			vertexData_1[2].y = 1.0f;
-			vertexData_1[2].z = 0.0f;
-
-			vertexData_1[3].x = 0.0f;
-			vertexData_1[3].y = 1.0f;
-			vertexData_1[3].z = 0.0f;
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		uint16_t indexArray_1[6] = { 0,1,2,0,2,3 };
+		////Data input is temporarily hardcoded...
+		//eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_2[7];
+		//{
+		//	// OpenGL is right-handed
 
-		if (!(result = eae6320::Graphics::cMesh::CreateMesh(m_gameObjectData_1[0].m_Mesh, vertexData_1, indexArray_1, 4, 6)))
+		//	vertexData_2[0].x = 0.0f;
+		//	vertexData_2[0].y = 0.0f;
+		//	vertexData_2[0].z = 0.0f;
+
+		//	vertexData_2[1].x = 0.0f;
+		//	vertexData_2[1].y = 1.0f;
+		//	vertexData_2[1].z = 0.0f;
+
+		//	vertexData_2[2].x = -1.0f;
+		//	vertexData_2[2].y = 1.0f;
+		//	vertexData_2[2].z = 0.0f;
+
+		//	vertexData_2[3].x = -1.0f;
+		//	vertexData_2[3].y = 0.0f;
+		//	vertexData_2[3].z = 0.0f;
+
+		//	vertexData_2[4].x = 0.0f;
+		//	vertexData_2[4].y = -1.0f;
+		//	vertexData_2[4].z = 0.0f;
+
+		//	vertexData_2[5].x = 1.0f;
+		//	vertexData_2[5].y = -1.0f;
+		//	vertexData_2[5].z = 0.0f;
+
+		//	vertexData_2[6].x = 1.0f;
+		//	vertexData_2[6].y = 0.0f;
+		//	vertexData_2[6].z = 0.0f;
+		//}
+
+		//uint16_t indexArray_2[15] = { 0,1,2,0,2,3,0,3,4,0,4,5,0,5,6 };
+
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_1[1].m_Mesh, "data/meshes/Mesh_2.lua")))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+		}
+		//eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_1[1].m_Mesh, "data/meshes/Mesh_2.lua");
+
+		//eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_3[4];
+		//{
+		//	// OpenGL is right-handed
+
+		//	vertexData_3[0].x = 0.0f;
+		//	vertexData_3[0].y = 0.0f;
+		//	vertexData_3[0].z = 0.0f;
+
+		//	vertexData_3[1].x = 1.0f;
+		//	vertexData_3[1].y = 0.0f;
+		//	vertexData_3[1].z = 0.0f;
+
+		//	vertexData_3[2].x = 1.0f;
+		//	vertexData_3[2].y = 1.0f;
+		//	vertexData_3[2].z = 0.0f;
+
+		//	vertexData_3[3].x = 0.0f;
+		//	vertexData_3[3].y = 1.0f;
+		//	vertexData_3[3].z = 0.0f;
+		//}
+
+		//uint16_t indexArray_3[6] = { 0,1,2,0,2,3 };
+
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_2[0].m_Mesh, "data/meshes/Mesh_1.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
 		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_2[7];
-		{
-			// OpenGL is right-handed
+		//eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_4[7];
+		//{
+		//	// OpenGL is right-handed
 
-			vertexData_2[0].x = 0.0f;
-			vertexData_2[0].y = 0.0f;
-			vertexData_2[0].z = 0.0f;
+		//	vertexData_4[0].x = 0.0f;
+		//	vertexData_4[0].y = 0.0f;
+		//	vertexData_4[0].z = 0.0f;
 
-			vertexData_2[1].x = 0.0f;
-			vertexData_2[1].y = 1.0f;
-			vertexData_2[1].z = 0.0f;
+		//	vertexData_4[1].x = 0.0f;
+		//	vertexData_4[1].y = 1.0f;
+		//	vertexData_4[1].z = 0.0f;
 
-			vertexData_2[2].x = -1.0f;
-			vertexData_2[2].y = 1.0f;
-			vertexData_2[2].z = 0.0f;
+		//	vertexData_4[2].x = -1.0f;
+		//	vertexData_4[2].y = 1.0f;
+		//	vertexData_4[2].z = 0.0f;
 
-			vertexData_2[3].x = -1.0f;
-			vertexData_2[3].y = 0.0f;
-			vertexData_2[3].z = 0.0f;
+		//	vertexData_4[3].x = -1.0f;
+		//	vertexData_4[3].y = 0.0f;
+		//	vertexData_4[3].z = 0.0f;
 
-			vertexData_2[4].x = 0.0f;
-			vertexData_2[4].y = -1.0f;
-			vertexData_2[4].z = 0.0f;
+		//	vertexData_4[4].x = 0.0f;
+		//	vertexData_4[4].y = -1.0f;
+		//	vertexData_4[4].z = 0.0f;
 
-			vertexData_2[5].x = 1.0f;
-			vertexData_2[5].y = -1.0f;
-			vertexData_2[5].z = 0.0f;
+		//	vertexData_4[5].x = 1.0f;
+		//	vertexData_4[5].y = -1.0f;
+		//	vertexData_4[5].z = 0.0f;
 
-			vertexData_2[6].x = 1.0f;
-			vertexData_2[6].y = 0.0f;
-			vertexData_2[6].z = 0.0f;
-		}
+		//	vertexData_4[6].x = 1.0f;
+		//	vertexData_4[6].y = 0.0f;
+		//	vertexData_4[6].z = 0.0f;
+		//}
 
-		uint16_t indexArray_2[15] = { 0,1,2,0,2,3,0,3,4,0,4,5,0,5,6 };
+		//uint16_t indexArray_4[15] = { 0,1,2,0,2,3,0,3,4,0,4,5,0,5,6 };
 
-		if (!(result = eae6320::Graphics::cMesh::CreateMesh(m_gameObjectData_1[1].m_Mesh, vertexData_2, indexArray_2, 7, 15)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-		}
-
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_3[4];
-		{
-			// OpenGL is right-handed
-
-			vertexData_3[0].x = 0.0f;
-			vertexData_3[0].y = 0.0f;
-			vertexData_3[0].z = 0.0f;
-
-			vertexData_3[1].x = 1.0f;
-			vertexData_3[1].y = 0.0f;
-			vertexData_3[1].z = 0.0f;
-
-			vertexData_3[2].x = 1.0f;
-			vertexData_3[2].y = 1.0f;
-			vertexData_3[2].z = 0.0f;
-
-			vertexData_3[3].x = 0.0f;
-			vertexData_3[3].y = 1.0f;
-			vertexData_3[3].z = 0.0f;
-		}
-
-		uint16_t indexArray_3[6] = { 0,1,2,0,2,3 };
-
-		if (!(result = eae6320::Graphics::cMesh::CreateMesh(m_gameObjectData_2[0].m_Mesh, vertexData_3, indexArray_3, 4, 6)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-		}
-
-		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_4[7];
-		{
-			// OpenGL is right-handed
-
-			vertexData_4[0].x = 0.0f;
-			vertexData_4[0].y = 0.0f;
-			vertexData_4[0].z = 0.0f;
-
-			vertexData_4[1].x = 0.0f;
-			vertexData_4[1].y = 1.0f;
-			vertexData_4[1].z = 0.0f;
-
-			vertexData_4[2].x = -1.0f;
-			vertexData_4[2].y = 1.0f;
-			vertexData_4[2].z = 0.0f;
-
-			vertexData_4[3].x = -1.0f;
-			vertexData_4[3].y = 0.0f;
-			vertexData_4[3].z = 0.0f;
-
-			vertexData_4[4].x = 0.0f;
-			vertexData_4[4].y = -1.0f;
-			vertexData_4[4].z = 0.0f;
-
-			vertexData_4[5].x = 1.0f;
-			vertexData_4[5].y = -1.0f;
-			vertexData_4[5].z = 0.0f;
-
-			vertexData_4[6].x = 1.0f;
-			vertexData_4[6].y = 0.0f;
-			vertexData_4[6].z = 0.0f;
-		}
-
-		uint16_t indexArray_4[15] = { 0,1,2,0,2,3,0,3,4,0,4,5,0,5,6 };
-
-		if (!(result = eae6320::Graphics::cMesh::CreateMesh(m_gameObjectData_2[1].m_Mesh, vertexData_4, indexArray_4, 7, 15)))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_2[1].m_Mesh, "data/meshes/Mesh_2.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}

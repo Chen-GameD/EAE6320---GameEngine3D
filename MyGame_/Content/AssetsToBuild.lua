@@ -15,4 +15,9 @@ return
 		{ path = "Shaders/Fragment/myShader_3.shader", arguments = { "fragment" } },
 		{ path = "Shaders/Fragment/myShader_4.shader", arguments = { "fragment" } },
 	},
+	meshes =
+	{
+		{ path = "Meshes/Mesh_1.lua"},
+		{ path = "Meshes/Mesh_2.lua"},
+	},
 }

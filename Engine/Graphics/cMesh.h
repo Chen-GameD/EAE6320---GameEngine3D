@@ -32,6 +32,8 @@ namespace eae6320
 
 		public:
 
+			static cResult CreateMeshWithLuaFile(cMesh*& o_mesh, const char* const i_path);
+
 			static cResult CreateMesh(cMesh*& o_mesh, eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount);
 
 			//eae6320::cResult InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount);
