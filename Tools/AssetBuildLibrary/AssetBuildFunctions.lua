@@ -382,7 +382,7 @@ local function BuildAsset( i_assetInfo )
 			-- The following line can be uncommented to see what command line is being executed
 			-- (this can be used, for example, to figure out what command arguments to provide Visual Studio
 			-- in order to debug a Builder)
---			print( commandLine )
+			print( commandLine )
 			local result, exitCode = ExecuteCommand( commandLine )
 			if result then
 				if exitCode == 0 then
