@@ -310,6 +310,8 @@ eae6320::cResult eae6320::Graphics::cMesh::CreateMeshWithLuaFile(cMesh*& o_mesh,
 		EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 	}
 
+	free(vertexData);
+	free(indexArray);
 	return result;
 }
 
