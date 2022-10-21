@@ -15,7 +15,7 @@
 // Initialize / Clean Up
 //----------------------
 
-uint16_t* ConvertIndexArrayToD3DVersion(uint16_t i_indexArray[], int indexCount)
+uint16_t* ConvertIndexArrayToD3DVersion(uint16_t i_indexArray[], uint16_t indexCount)
 {
 	uint16_t* retIndexArray = i_indexArray;
 	for (int i = 0; i < indexCount;)
@@ -31,7 +31,7 @@ uint16_t* ConvertIndexArrayToD3DVersion(uint16_t i_indexArray[], int indexCount)
 	return retIndexArray;
 }
 
-eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount)
+eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], uint16_t vertexCount, uint16_t indexCount)
 {
 	// how much memory the member variables take
 	Logging::OutputMessage("m_vertexFormat takes : %d:", sizeof(m_vertexFormat));

@@ -12,7 +12,7 @@
 // Initialize / Clean Up
 //----------------------
 
-eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount)
+eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], uint16_t vertexCount, uint16_t indexCount)
 {
 	// how much memory the member variables take
 	Logging::OutputMessage("m_vertexBufferId takes : %d:", sizeof(m_vertexBufferId));
@@ -79,7 +79,7 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeGeometry(eae6320::Graphics:
 	}
 	// Assign the data to the vertex buffer
 	{
-		auto bufferSize = sizeof(i_vertexData[0]) * indexCount;
+		auto bufferSize = sizeof(i_vertexData[0]) * vertexCount;
 		EAE6320_ASSERT(bufferSize <= (unsigned int)std::numeric_limits<GLsizeiptr>::max());
 		glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(bufferSize), reinterpret_cast<GLvoid*>(i_vertexData),
 			// In our class we won't ever read from the buffer

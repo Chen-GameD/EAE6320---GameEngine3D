@@ -358,6 +358,12 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		m_camera.m_RigidBodyState.position.z = 10;
 	}
 
+	// Initialize the Object
+	{
+		m_gameObjectData_1[1].m_RigidBodyState.position = Math::sVector(0, -1, 0);
+		m_gameObjectData_2[1].m_RigidBodyState.position = Math::sVector(0, -1, 0);
+	}
+
 	m_gameObjectData_submit = m_gameObjectData_1;
 	m_numOfGameObject_submit = 2;
 

@@ -51,11 +51,18 @@ eae6320::cResult LoadTableValues_vertex_values_sigle_line(lua_State& io_luaState
 	return result;
 }
 
-eae6320::cResult LoadTableValues_vertex_values(lua_State& io_luaState, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, int& vertexCount)
+eae6320::cResult LoadTableValues_vertex_values(lua_State& io_luaState, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, uint16_t& vertexCount)
 {
 	auto result = eae6320::Results::Success;
 
-	vertexCount = (int)luaL_len(&io_luaState, -1);
+	const auto temp_vertexCount = luaL_len(&io_luaState, -1);
+	vertexCount = (uint16_t)temp_vertexCount;
+	if (vertexCount != temp_vertexCount)
+	{
+		EAE6320_ASSERTF(false, "The number of vertexData is too large!");
+		return eae6320::Results::Failure;
+	}
+
 	i_vertexData = (struct eae6320::Graphics::VertexFormats::sVertex_mesh*)malloc(sizeof(eae6320::Graphics::VertexFormats::sVertex_mesh) * vertexCount);
 	for (int i = 1; i <= vertexCount; ++i)
 	{
@@ -83,11 +90,18 @@ eae6320::cResult LoadTableValues_vertex_values(lua_State& io_luaState, eae6320::
 	return result;
 }
 
-eae6320::cResult LoadTableValues_index_values(lua_State& io_luaState, uint16_t*& i_indexArray, int& indexCount)
+eae6320::cResult LoadTableValues_index_values(lua_State& io_luaState, uint16_t*& i_indexArray, uint16_t& indexCount)
 {
 	auto result = eae6320::Results::Success;
+	
+	const auto temp_indexCount = luaL_len(&io_luaState, -1);
+	indexCount = (uint16_t)temp_indexCount;
+	if (indexCount != temp_indexCount)
+	{
+		EAE6320_ASSERTF(false, "The number of indexArray is too large!");
+		return eae6320::Results::Failure;
+	}
 
-	indexCount = (int)luaL_len(&io_luaState, -1);
 	i_indexArray = (uint16_t*)malloc(sizeof(uint16_t) * indexCount);
 	for (int i = 1; i <= indexCount; ++i)
 	{
@@ -98,13 +112,13 @@ eae6320::cResult LoadTableValues_index_values(lua_State& io_luaState, uint16_t*&
 				lua_pop(&io_luaState, 1);
 			});
 
-		i_indexArray[i - 1] = (int)lua_tonumber(&io_luaState, -1);
+		i_indexArray[i - 1] = (uint16_t)lua_tonumber(&io_luaState, -1);
 	}
 
 	return result;
 }
 
-eae6320::cResult LoadTableValues_vertex(lua_State& io_luaState, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, int& vertexCount)
+eae6320::cResult LoadTableValues_vertex(lua_State& io_luaState, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, uint16_t& vertexCount)
 {
 	auto result = eae6320::Results::Success;
 
@@ -135,7 +149,7 @@ eae6320::cResult LoadTableValues_vertex(lua_State& io_luaState, eae6320::Graphic
 	return result;
 }
 
-eae6320::cResult LoadTableValues_index(lua_State& io_luaState, uint16_t*& i_indexArray, int& indexCount)
+eae6320::cResult LoadTableValues_index(lua_State& io_luaState, uint16_t*& i_indexArray, uint16_t& indexCount)
 {
 	auto result = eae6320::Results::Success;
 
@@ -166,7 +180,7 @@ eae6320::cResult LoadTableValues_index(lua_State& io_luaState, uint16_t*& i_inde
 	return result;
 }
 
-eae6320::cResult LoadTableValues(lua_State& io_luaState, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, uint16_t*& i_indexArray, int& vertexCount, int& indexCount)
+eae6320::cResult LoadTableValues(lua_State& io_luaState, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, uint16_t*& i_indexArray, uint16_t& vertexCount, uint16_t& indexCount)
 {
 	auto result = eae6320::Results::Success;
 
@@ -182,7 +196,7 @@ eae6320::cResult LoadTableValues(lua_State& io_luaState, eae6320::Graphics::Vert
 	return result;
 }
 
-eae6320::cResult LoadAsset(const char* const i_path, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, uint16_t*& i_indexArray, int& vertexCount, int& indexCount)
+eae6320::cResult LoadAsset(const char* const i_path, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, uint16_t*& i_indexArray, uint16_t& vertexCount, uint16_t& indexCount)
 {
 	auto result = eae6320::Results::Success;
 
@@ -278,7 +292,7 @@ eae6320::cResult LoadAsset(const char* const i_path, eae6320::Graphics::VertexFo
 	return result;
 }
 
-eae6320::cResult ReadNestedTableValues(const char* const i_path, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, uint16_t*& i_indexArray, int& vertexCount, int& indexCount)
+eae6320::cResult ReadNestedTableValues(const char* const i_path, eae6320::Graphics::VertexFormats::sVertex_mesh*& i_vertexData, uint16_t*& i_indexArray, uint16_t& vertexCount, uint16_t& indexCount)
 {
 	auto result = eae6320::Results::Success;
 
@@ -299,8 +313,8 @@ eae6320::cResult eae6320::Graphics::cMesh::CreateMeshWithLuaFile(cMesh*& o_mesh,
 
 	eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData = nullptr;
 	uint16_t* indexArray = nullptr;
-	int vertexCount = 0;
-	int indexCount = 0;
+	uint16_t vertexCount = 0;
+	uint16_t indexCount = 0;
 
 	// Parse lua file
 	ReadNestedTableValues(i_path, vertexData, indexArray, vertexCount, indexCount);
@@ -315,7 +329,7 @@ eae6320::cResult eae6320::Graphics::cMesh::CreateMeshWithLuaFile(cMesh*& o_mesh,
 	return result;
 }
 
-eae6320::cResult eae6320::Graphics::cMesh::CreateMesh(cMesh*& o_mesh, eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], int vertexCount, int indexCount)
+eae6320::cResult eae6320::Graphics::cMesh::CreateMesh(cMesh*& o_mesh, eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], uint16_t vertexCount, uint16_t indexCount)
 {
 	auto result = Results::Success;
 
