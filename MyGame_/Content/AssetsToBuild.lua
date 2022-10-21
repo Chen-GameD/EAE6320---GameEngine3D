@@ -19,5 +19,6 @@ return
 	{
 		{ path = "Meshes/Mesh_1.lua"},
 		{ path = "Meshes/Mesh_2.lua"},
+		{ path = "Meshes/Mesh_3.lua"},
 	},
 }
