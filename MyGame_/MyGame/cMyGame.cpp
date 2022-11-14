@@ -9,6 +9,7 @@
 #include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Graphics/cMesh.h>
 #include <Engine/Graphics/cEffect.h>
+#include <Engine/Audio/AudioSystem.h>
 
 // Static Data
 //============
@@ -30,6 +31,8 @@ namespace
 
 // Run
 //----
+
+eae6320::AudioSystem::cAudio myAudio;
 
 void eae6320::cMyGame::UpdateBasedOnInput()
 {
@@ -86,6 +89,38 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	{
 		m_gameObjectData_1[0].m_RigidBodyState.velocity = Math::sVector(0, 0, 0);
 		m_gameObjectData_2[0].m_RigidBodyState.velocity = Math::sVector(0, 0, 0);
+	}
+
+	// Test
+	if (UserInput::IsKeyPressed('T'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.IsPlaying();
+		//eae6320::AudioSystem::Play(1);
+	}
+
+	if (UserInput::IsKeyPressed('P'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.PauseAudio();
+		myAudio.PauseAudio();
+	}
+
+	if (UserInput::IsKeyPressed('O'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.SubmitAudioSource();
+		//myAudio.Play(1);
+		//eae6320::AudioSystem::Play(1);
+		myAudio.Play(true);
+	}
+
+	if (UserInput::IsKeyPressed('I'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.SubmitAudioSource();
+		//myAudio.Play(2);
+		//eae6320::AudioSystem::Play(2);
 	}
 
 
@@ -260,6 +295,12 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	Logging::OutputMessage("MyGame is initialized!");
 
+	//eae6320::AudioSystem::SubmitAudioToPlay();
+	//myAudio.SubmitAudioToPlay();
+
+	//myAudio.PauseAudio();
+	//myAudio.SubmitAudioSource();
+
 	return result;
 }
 
@@ -307,4 +348,10 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	// Submit camera
 	Graphics::SubmitCamera(m_camera, i_elapsedSecondCount_sinceLastSimulationUpdate);
+	
+	myAudio.CreateAudioData("data/audios/Test.mp3", "TestAudio");
+	myAudio.SubmitAudioSource();
+	
+
+	//eae6320::AudioSystem::SubmitAudioSource();
 }
