@@ -32,7 +32,7 @@ namespace eae6320
 
 		public:
 
-			static cResult CreateMeshWithLuaFile(cMesh*& o_mesh, const char* const i_path);
+			static cResult CreateMeshWithBinaryFile(cMesh*& o_mesh, const char* const i_path);
 
 			static cResult CreateMesh(cMesh*& o_mesh, eae6320::Graphics::VertexFormats::sVertex_mesh i_vertexData[], uint16_t i_indexArray[], uint16_t vertexCount, uint16_t indexCount);
 
