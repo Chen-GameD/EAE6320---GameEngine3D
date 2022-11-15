@@ -243,32 +243,32 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	// Initialize the geometry
 	{
-		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_1[0].m_Mesh, "data/meshes/Mesh_1.lua")))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_1[0].m_Mesh, "data/meshes/Mesh_1.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_1[1].m_Mesh, "data/meshes/Mesh_2.lua")))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_1[1].m_Mesh, "data/meshes/Mesh_2.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_1[2].m_Mesh, "data/meshes/Mesh_3.lua")))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_1[2].m_Mesh, "data/meshes/Mesh_3.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_2[0].m_Mesh, "data/meshes/Mesh_1.lua")))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_2[0].m_Mesh, "data/meshes/Mesh_1.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_2[1].m_Mesh, "data/meshes/Mesh_2.lua")))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_2[1].m_Mesh, "data/meshes/Mesh_2.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithLuaFile(m_gameObjectData_2[2].m_Mesh, "data/meshes/Mesh_3.lua")))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_2[2].m_Mesh, "data/meshes/Mesh_3.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
