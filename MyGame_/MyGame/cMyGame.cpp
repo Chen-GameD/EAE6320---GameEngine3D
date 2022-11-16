@@ -97,6 +97,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 		//eae6320::AudioSystem::PauseAudio();
 		//myAudio.IsPlaying();
 		//eae6320::AudioSystem::Play(1);
+		myAudio.PlayIndependent();
 	}
 
 	if (UserInput::IsKeyPressed('P'))
@@ -112,7 +113,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 		//myAudio.SubmitAudioSource();
 		//myAudio.Play(1);
 		//eae6320::AudioSystem::Play(1);
-		myAudio.Play(true);
+		myAudio.Play();
 	}
 
 	if (UserInput::IsKeyPressed('I'))
@@ -121,6 +122,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 		//myAudio.SubmitAudioSource();
 		//myAudio.Play(2);
 		//eae6320::AudioSystem::Play(2);
+		myAudio.SetVolume(100);
 	}
 
 
@@ -301,6 +303,8 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	//myAudio.PauseAudio();
 	//myAudio.SubmitAudioSource();
 
+	myAudio.CreateAudioData("data/audios/Mixdown.wav", "TestAudio");
+
 	return result;
 }
 
@@ -349,7 +353,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 	// Submit camera
 	Graphics::SubmitCamera(m_camera, i_elapsedSecondCount_sinceLastSimulationUpdate);
 	
-	myAudio.CreateAudioData("data/audios/Test.mp3", "TestAudio");
+	//myAudio.CreateAudioData("data/audios/Test.mp3", "TestAudio");
 	myAudio.SubmitAudioSource();
 	
 

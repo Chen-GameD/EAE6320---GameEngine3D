@@ -52,22 +52,50 @@ namespace eae6320
             // Audio's volume
             size_t volume = 1000;
 
+            // Is loop
+            bool isLoop;
+
+            // Independent play index
+            size_t inIndex;
+
         public:
             // Interface
             //==========
 
-            void CreateAudioData(std::string i_filePath = "", std::string i_audioName = "", size_t i_volume = 1000);
+            // This function needs to call at Initialize function at MyGame.
+            // Create all the audio assets at once and then submit them at submit function.
+            // Params:
+            // i_filePath: Audio file path
+            // i_audioName: Audio nickname
+            // i_volume: Default audio volume
+            // i_isLoop: The play state, is looping or not
+            void CreateAudioData(std::string i_filePath = "", std::string i_audioName = "", size_t i_volume = 1000, bool i_isLoop = false);
 
+            // Before call play, has to call SubmitAudioSource first, This interface can not call in Initialize function but anywhere else.
             void SubmitAudioSource();
 
-            // Play the audio: 
+            // Play the audio: Need to call SubmitAudioSource() first.
             // param:
             // * isLoop: If this is true, will loop play this audio, if this is false, just play once.
-            void Play(bool isLoop);
+            void Play();
+
+            // If you want to play the same audio multiple times simultaneously.
+            // You need to call this function instead of Play()
+            void PlayIndependent();
 
             void PauseAudio();
 
+            // i_volume has to between (1 ~ 1000)
+            void SetVolume(size_t i_volume);
+
             bool IsPlaying();
+
+            eae6320::cResult CloseAudio();
+
+        private:
+            bool IsPlaying_WithName(std::string i_audioName);
+
+            eae6320::cResult CloseAudio_WithName(std::string i_audioName);
 
 		public:
 
