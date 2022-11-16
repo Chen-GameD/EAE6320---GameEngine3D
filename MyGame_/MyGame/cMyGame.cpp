@@ -107,6 +107,13 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 		myAudio.PauseAudio();
 	}
 
+	if (UserInput::IsKeyPressed('R'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.PauseAudio();
+		myAudio.ResumeAudio();
+	}
+
 	if (UserInput::IsKeyPressed('O'))
 	{
 		//eae6320::AudioSystem::PauseAudio();

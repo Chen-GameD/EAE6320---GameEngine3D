@@ -81,9 +81,16 @@ namespace eae6320
 
             // If you want to play the same audio multiple times simultaneously.
             // You need to call this function instead of Play()
+            // ***********************************IMPORTANT******************************************
+            // Use this function to play audio. It will generate a new audio instance for the audio system
+            // But it will use the same audio volume to play it.
+            // And if you call PauseAudio() function, it will pause all instance.
+            // ***********************************IMPORTANT******************************************
             void PlayIndependent();
 
             void PauseAudio();
+
+            void ResumeAudio();
 
             // i_volume has to between (1 ~ 1000)
             void SetVolume(size_t i_volume);

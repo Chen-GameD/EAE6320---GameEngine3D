@@ -8,7 +8,6 @@
 #include <Engine/Graphics/VertexFormats.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Asserts/Asserts.h>
-#include <Tools/AssetBuildLibrary/Functions.h>
 
 #include <fstream> 
 

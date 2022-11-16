@@ -155,6 +155,8 @@ void eae6320::AudioSystem::cAudio::PlayIndependent()
 		mciGetErrorString(mciError, errorMessage, 128);
 		Logging::OutputMessage("Play audio %s failed : %s:", t_audioName, errorMessage);
 	}
+
+	SetVolume(volume);
 }
 
 void eae6320::AudioSystem::cAudio::PauseAudio()
@@ -174,6 +176,69 @@ void eae6320::AudioSystem::cAudio::PauseAudio()
 		{
 			mciGetErrorString(mciError, errorMessage, 128);
 			Logging::OutputMessage("Pause audio failed : %s:", errorMessage);
+		}
+	}
+
+	// Pause all independent audio
+	std::string t_audioName;
+	for (size_t i = inIndex; i > 0; i--)
+	{
+		t_audioName = audioName + "_" + std::to_string(i);
+		mciCommendString = "pause " + t_audioName;
+		temp = std::wstring(mciCommendString.begin(), mciCommendString.end());
+		mciCommend = temp.c_str();
+
+		mciError = mciSendString(mciCommend, NULL, 0, 0);
+		if (mciError)
+		{
+			mciGetErrorString(mciError, errorMessage, 128);
+			if (errorMessage)
+			{
+				mciGetErrorString(mciError, errorMessage, 128);
+				Logging::OutputMessage("Pause audio %s failed : %s:", t_audioName, errorMessage);
+			}
+		}
+	}
+}
+
+void eae6320::AudioSystem::cAudio::ResumeAudio()
+{
+	MCIERROR mciError;
+	WCHAR errorMessage[128];
+	std::string mciCommendString = "resume " + audioName;
+	std::wstring temp = std::wstring(mciCommendString.begin(), mciCommendString.end());
+	LPCWSTR mciCommend = temp.c_str();
+
+	mciError = mciSendString(mciCommend, NULL, 0, 0);
+
+	if (mciError)
+	{
+		mciGetErrorString(mciError, errorMessage, 128);
+		if (errorMessage)
+		{
+			mciGetErrorString(mciError, errorMessage, 128);
+			Logging::OutputMessage("Resume audio failed : %s:", errorMessage);
+		}
+	}
+
+	// Resume all independent audio
+	std::string t_audioName;
+	for (size_t i = inIndex; i > 0; i--)
+	{
+		t_audioName = audioName + "_" + std::to_string(i);
+		mciCommendString = "resume " + t_audioName;
+		temp = std::wstring(mciCommendString.begin(), mciCommendString.end());
+		mciCommend = temp.c_str();
+
+		mciError = mciSendString(mciCommend, NULL, 0, 0);
+		if (mciError)
+		{
+			mciGetErrorString(mciError, errorMessage, 128);
+			if (errorMessage)
+			{
+				mciGetErrorString(mciError, errorMessage, 128);
+				Logging::OutputMessage("Resume audio %s failed : %s:", t_audioName, errorMessage);
+			}
 		}
 	}
 }

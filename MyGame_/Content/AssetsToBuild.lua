@@ -21,4 +21,10 @@ return
 		{ path = "Meshes/Mesh_2.lua"},
 		{ path = "Meshes/Mesh_3.lua"},
 	},
+	audios =
+	{
+		{ path = "Audios/Mixdown.mp3"},
+		{ path = "Audios/Mixdown.wav"},
+		{ path = "Audios/Test.mp3"},
+	},
 }
