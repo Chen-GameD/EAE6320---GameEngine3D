@@ -303,7 +303,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	//myAudio.PauseAudio();
 	//myAudio.SubmitAudioSource();
 
-	myAudio.CreateAudioData("data/audios/Mixdown.wav", "TestAudio");
+	myAudio.CreateAudioData("data/audios/Mixdown.wav", "TestAudio", 1000, true);
 
 	return result;
 }

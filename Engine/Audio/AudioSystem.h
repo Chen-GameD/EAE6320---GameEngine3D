@@ -68,7 +68,7 @@ namespace eae6320
             // i_filePath: Audio file path
             // i_audioName: Audio nickname
             // i_volume: Default audio volume
-            // i_isLoop: The play state, is looping or not
+            // i_isLoop: The play state is looping or not
             void CreateAudioData(std::string i_filePath = "", std::string i_audioName = "", size_t i_volume = 1000, bool i_isLoop = false);
 
             // Before call play, has to call SubmitAudioSource first, This interface can not call in Initialize function but anywhere else.

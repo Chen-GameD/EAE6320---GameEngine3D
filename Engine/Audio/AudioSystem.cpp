@@ -209,6 +209,30 @@ void eae6320::AudioSystem::cAudio::SetVolume(size_t i_volume)
 			Logging::OutputMessage("Set audio volume failed : %s:", errorMessage);
 		}
 	}
+
+	// Set all independent audio to the same volume
+	if (inIndex > 0)
+	{
+		for (size_t i = inIndex; i > 0; i--)
+		{
+			std::string t_audioName = audioName + "_" + std::to_string(i);
+			mciCommendString = "setaudio " + t_audioName + " volume to " + std::to_string(volume);
+			temp = std::wstring(mciCommendString.begin(), mciCommendString.end());
+			mciCommend = temp.c_str();
+
+			mciError = mciSendString(mciCommend, NULL, 0, 0);
+
+			if (mciError)
+			{
+				mciGetErrorString(mciError, errorMessage, 128);
+				if (errorMessage)
+				{
+					mciGetErrorString(mciError, errorMessage, 128);
+					Logging::OutputMessage("Set audio %s volume failed : %s:", t_audioName, errorMessage);
+				}
+			}
+		}
+	}
 }
 
 bool eae6320::AudioSystem::cAudio::IsPlaying()
