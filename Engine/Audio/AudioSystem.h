@@ -88,15 +88,19 @@ namespace eae6320
             // ***********************************IMPORTANT******************************************
             void PlayIndependent();
 
+            // Pause audio(include all independent audio)
             void PauseAudio();
 
+            // Resume audio(include all independent audio)
             void ResumeAudio();
 
             // i_volume has to between (1 ~ 1000)
             void SetVolume(size_t i_volume);
 
+            // Check current audio state, if is playing, return true
             bool IsPlaying();
 
+            // Close audio(include all independent audio)
             eae6320::cResult CloseAudio();
 
         private:
@@ -107,7 +111,7 @@ namespace eae6320
 		public:
 
             // Constructor
-            cAudio(std::string i_filePath = "", std::string i_audioName = "", size_t i_volume = 1000) : filePath(i_filePath), audioName(i_audioName), volume(i_volume) {}
+            //cAudio(std::string i_filePath = "", std::string i_audioName = "", size_t i_volume = 1000) : filePath(i_filePath), audioName(i_audioName), volume(i_volume) {}
 
             // Ban default constructor
             //cAudio() = delete;
