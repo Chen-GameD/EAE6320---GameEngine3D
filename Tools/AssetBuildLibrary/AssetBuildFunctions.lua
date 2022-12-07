@@ -294,6 +294,28 @@ NewAssetTypeInfo( "audios",
 	}
 )
 
+-- Story Asset Type
+--------------------
+
+NewAssetTypeInfo( "stories",
+	{
+		ConvertSourceRelativePathToBuiltRelativePath = function( i_sourceRelativePath )
+			-- Change the source file extension to the binary version
+			local relativeDirectory, file = i_sourceRelativePath:match( "(.-)([^/\\]+)$" )
+			local fileName, extensionWithPeriod = file:match( "([^%.]+)(.*)" )
+			-- The line below just puts the original pieces back together,
+			-- but you could change this to customize the way that you build assets
+			-- (you could, for example, use a different extension for binary shaders)
+			-- Custom Extension for Binary files - (.bsasset)(Built Shader Asset)
+			local newExtensionWithPeriod = ".storyasset"
+			return relativeDirectory .. fileName .. newExtensionWithPeriod
+		end,
+		GetBuilderRelativePath = function()
+			return "StoryBuilder.exe"
+		end
+	}
+)
+
 -- Local Function Definitions
 --===========================
 

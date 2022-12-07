@@ -114,8 +114,13 @@ namespace eae6320
 			iApplication();
 			virtual ~iApplication() = 0;
 
+		protected:
 			// Inheritable Implementation
 			//===========================
+
+			// ImGui UI
+			//=========
+			virtual void RegisterOnImGuiRenderUI(const std::function<void()>& i_OnImGuiRenderUI);
 
 		private:
 

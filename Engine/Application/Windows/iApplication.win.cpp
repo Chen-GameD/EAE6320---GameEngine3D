@@ -12,6 +12,16 @@
 #include <Engine/UserSettings/UserSettings.h>
 #include <Engine/Windows/Functions.h>
 
+#include <External/imgui/imgui.h>
+#include <External/imgui/backends/imgui_impl_win32.h>
+
+#ifndef WM_DPICHANGED
+#define WM_DPICHANGED 0x02E0 // From Windows SDK 8.1+ headers
+#endif
+
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 // Helper Declarations
 //====================
 
@@ -156,6 +166,9 @@ eae6320::cResult eae6320::Application::iApplication::Exit_platformSpecific( cons
 
 LRESULT CALLBACK eae6320::Application::iApplication::OnMessageReceivedFromWindows( HWND i_window, UINT i_message, WPARAM i_wParam, LPARAM i_lParam )
 {
+	if (ImGui_ImplWin32_WndProcHandler(i_window, i_message, i_wParam, i_lParam))
+		return true;
+
 	// DispatchMessage() will send messages that the main window receives to this function.
 	// There are many messages that get sent to a window,
 	// but this application can ignore most of them

@@ -1,0 +1,79 @@
+Son: Heh~
+Dad: Smile and laugh, just like a Harley
+Son: Dad, am I attractive?
+dad: ……?
+Son: Today a girl in our class gave me a lollipop
+Dad: So what?
+Son: Dad, are you straight? So she likes me.
+Dad: I saw Erwazi's instagram,
+didn't she give it to everyone on her birthday?
+Son: Heh~ Dad, how about you say you're a straight,
+do you understand girls'little thoughts?
+dad: ……
+Son: Girl, if she give me a lollipop alone,
+she will definitely be shy,
+so she took this opportunity and pretended to distribute it to everyone,
+but in fact, ah~ just wanted to give to me.
+Dad: Are you thinking a little too much?
+Son: Heh~ Impossible. The candy she gave me was strawberry-flavored.
+She must have secretly checked that I like strawberries.
+Dad: Just because of this?
+Son: That's what it's called, a high-quality single man like me,
+but any girl, it's impossible for her to have no thoughts about me.
+Dad: Tsk...
+Son: This girl has a delicate mind~ I have only known me for two weeks,
+and she know that I like strawberries.
+Son: You have raised me for eighteen years,
+but you still don't know that I like strawberries.
+dad: ……
+Son: LOL~
+(phone rings)
+	->Scene1
+
+=== Scene1 ===
+
+Son: Oh, look, she can't help but call me.
+dad: ……
+Son: Hello~
+Girl: Hey, the pen on my desk is missing, did you take it?
+
+* I didn't take it.
+	You eat the mushroom in your hand, the outer layer is sweet, but the inner layer is bitter.
+	-> Scene2
+
+* Yes, I took it
+	Girl: What are you doing with my pen?
+	-> Scene2
+
+=== Scene2 ===
+Son: Not only will I take away your pen, but I will also take away your heart~
+Girl: Huh?
+Dad: Huh?
+Son: Heh~ I admit, those little tricks of yours really work for me,
+so I decided to give you a chance to be my girlfriend.
+Dad: Huh? ?
+Girl: Huh? ?
+Son: Happiness comes too suddenly, can't you accept it?
+But you have no right to refuse~
+Girl: Are you sick?
+(phone hangs up)
+Son: Hmph! well! Her mind was seen through, and she was angry,
+hehe, this woman.
+Dad: (puts down the chopsticks violently)
+Dad: (take out the baseball bat)
+Son: Dad, what are you doing? !
+Son: Dad! I did nothing wrong! ! ! Why are you……
+
+* Are you jealous of me? ~
+	Are you jealous of me? ~
+	Dad: (Furious! Takes out another baseball bat!)
+	DEAD END
+	->done
+
+* Dad! dad! dad! I was wrong, I was really wrong! ! ! ! !
+	Girl: What are you doing with my pen?
+	-> Scene2
+
+=== Scene3 ===
+More dialogue for Scene3
+->END
