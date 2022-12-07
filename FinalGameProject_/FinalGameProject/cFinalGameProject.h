@@ -13,6 +13,7 @@
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/StoryNarrator/Includes.h>
 #include <External/imgui/Includes.h>
+#include <Engine/Audio/AudioSystem.h>
 
 #if defined( EAE6320_PLATFORM_D3D )
 #include <Engine/Graphics/Direct3D/Includes.h>
@@ -120,6 +121,8 @@ namespace eae6320
 		int my_image_width = 0;
 		int my_image_height = 0;
 		ImFont* MyFont;
+
+		eae6320::AudioSystem::cAudio PhoneRingAudio;
 	};
 }
 

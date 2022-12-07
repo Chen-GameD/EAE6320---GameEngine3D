@@ -26,6 +26,7 @@ return
 		{ path = "Audios/Mixdown.mp3"},
 		{ path = "Audios/Mixdown.wav"},
 		{ path = "Audios/Test.mp3"},
+		{ path = "Audios/PhoneRing.wav"},
 	},
 	stories =
 	{

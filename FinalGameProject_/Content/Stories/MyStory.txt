@@ -1,73 +1,84 @@
-Son: Heh~
-Dad: Smile and laugh, just like a Harley
-Son: Dad, am I attractive?
-dad: ……?
-Son: Today a girl in our class gave me a lollipop
-Dad: So what?
-Son: Dad, are you straight? So she likes me.
-Dad: I saw Erwazi's instagram,
-didn't she give it to everyone on her birthday?
-Son: Heh~ Dad, how about you say you're a straight,
-do you understand girls'little thoughts?
-dad: ……
-Son: Girl, if she give me a lollipop alone,
-she will definitely be shy,
-so she took this opportunity and pretended to distribute it to everyone,
-but in fact, ah~ just wanted to give to me.
-Dad: Are you thinking a little too much?
-Son: Heh~ Impossible. The candy she gave me was strawberry-flavored.
-She must have secretly checked that I like strawberries.
-Dad: Just because of this?
-Son: That's what it's called, a high-quality single man like me,
-but any girl, it's impossible for her to have no thoughts about me.
-Dad: Tsk...
-Son: This girl has a delicate mind~ I have only known me for two weeks,
-and she know that I like strawberries.
-Son: You have raised me for eighteen years,
-but you still don't know that I like strawberries.
-dad: ……
-Son: LOL~
-(phone rings)
+Son: Heh~ -Pic1.jpg
+Dad: what are you laughing at? Like a fool. Eat! -Pic2.jpg
+Son: Dad, am I attractive? -Pic1.jpg
+Dad: ……? -Pic4.jpg
+Son: Today a girl in our class -Pic1.jpg
+gave me a lollipop -Pic3.jpg
+Dad: ...... -Pic5.jpg
+Dad: So what? -Pic6.jpg
+Son: Dad, are you straight? -Pic7.jpg
+So she likes me. -Pic8.jpg
+Dad: I saw Erwazi's instagram, -Pic10.jpg
+didn't she give it to everyone on her birthday? -Pic11.jpg
+Son: Heh~ Dad, how about you say you're a straight, -Pic8.jpg
+do you understand girls'little thoughts? -Pic12.jpg
+dad: …… -Pic11.jpg
+Son: Girl, if she give me a lollipop alone, -Pic15.jpg
+she will definitely be shy, -Pic15.jpg
+so she took this opportunity and pretended to distribute it to everyone, -Pic16.jpg
+but in fact, ah~ just wanted to give to me. -Pic17.jpg
+Dad: Are you thinking a little too much? -Pic14.jpg
+Son: Heh~ Impossible. The candy she gave me was strawberry flavored. -Pic18.jpg
+She must have secretly checked that I like strawberries. -Pic19.jpg
+Dad: Just because of this? -Pic14.jpg
+Son: That's what it's called, a high quality single man like me, -Pic20.jpg
+but any girl, it's impossible for her to have no thoughts about me. -Pic20.jpg
+Dad: Tsk... -Pic21.jpg
+Son: This girl has a delicate mind~ I have only known me for two weeks,-Pic22.jpg
+and she know that I like strawberries. -Pic22.jpg
+Son: You have raised me for eighteen years, -Pic23.jpg
+but you still don't know that I like strawberries. -Pic24.jpg
+Dad: …… -Pic25.jpg
+Son: (......) -Pic26.jpg
+Son: LOL~ -Pic27.jpg
+(phone rings) -Pic28.jpg -PhoneRingStart
 	->Scene1
 
 === Scene1 ===
 
-Son: Oh, look, she can't help but call me.
-dad: ……
-Son: Hello~
-Girl: Hey, the pen on my desk is missing, did you take it?
+Son: Oh, look, she can't help but call me. -Pic29.jpg
+dad: …… -Pic30.jpg
+Son: Hello~ -Pic31.jpg -PhoneRingStop
+Girl: Hey, the pen on my desk is missing, did you take it? -Pic32.jpg
 
 * I didn't take it.
 	You eat the mushroom in your hand, the outer layer is sweet, but the inner layer is bitter.
 	-> Scene2
 
 * Yes, I took it
-	Girl: What are you doing with my pen?
+	Son: Yes, I took it. -Pic31.jpg
+	Girl: What are you doing with my pen? -Pic32.jpg
 	-> Scene2
 
 === Scene2 ===
-Son: Not only will I take away your pen, but I will also take away your heart~
-Girl: Huh?
-Dad: Huh?
-Son: Heh~ I admit, those little tricks of yours really work for me,
-so I decided to give you a chance to be my girlfriend.
-Dad: Huh? ?
-Girl: Huh? ?
-Son: Happiness comes too suddenly, can't you accept it?
-But you have no right to refuse~
-Girl: Are you sick?
-(phone hangs up)
-Son: Hmph! well! Her mind was seen through, and she was angry,
-hehe, this woman.
-Dad: (puts down the chopsticks violently)
-Dad: (take out the baseball bat)
-Son: Dad, what are you doing? !
-Son: Dad! I did nothing wrong! ! ! Why are you……
+Son: Not only will I take away your pen, -Pic31.jpg
+but I will also take away your heart~ -Pic33.jpg
+Girl: Huh? -Pic34.jpg
+Dad: Huh? -Pic35.jpg
+Son: Heh~ I admit, -Pic36.jpg
+those little tricks of yours really work for me, -Pic37.jpg
+so I decided to give you a chance -Pic38.jpg
+to be my girlfriend. -Pic39.jpg
+Dad: Huh? ? -Pic35.jpg
+Girl: Huh? ? -Pic40.jpg
+Son: Happiness comes too suddenly, can't you accept it? -Pic41.jpg
+But you have no right to refuse~ -Pic42.jpg
+Girl: Are you sick? -Pic43.jpg
+(phone hangs up) -Pic44.jpg
+Son: Hmph! well! Her mind was seen through, -Pic45.jpg
+and she was angry, -Pic46.jpg
+hehe, this woman. -Pic47.jpg
+Dad: (puts down the chopsticks violently) -Pic48.jpg
+Dad: (take out the baseball bat) -Pic49.jpg
+Son: Dad, what are you doing? ! -Pic50.jpg
+Son: Dad! I did nothing wrong! ! ! Why are you…… -Pic51.jpg
 
 * Are you jealous of me? ~
-	Are you jealous of me? ~
-	Dad: (Furious! Takes out another baseball bat!)
-	DEAD END
+	Son: Are you -Pic52.jpg
+ 	jealous of me? ~ -Pic53.jpg
+	Dad: (??????????????????????) -Pic54.jpg
+	Dad: (Furious! Takes out another baseball bat!) -Pic55.jpg
+	DEAD END -Pic56.jpg
 	->done
 
 * Dad! dad! dad! I was wrong, I was really wrong! ! ! ! !

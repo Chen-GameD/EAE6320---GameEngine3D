@@ -9,7 +9,6 @@
 #include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Graphics/cMesh.h>
 #include <Engine/Graphics/cEffect.h>
-#include <Engine/Audio/AudioSystem.h>
 
 #include <random>
 
@@ -27,8 +26,6 @@ namespace
 
 // Run
 //----
-
-eae6320::AudioSystem::cAudio myAudio;
 
 #if defined( EAE6320_PLATFORM_D3D )
 #define STB_IMAGE_IMPLEMENTATION
@@ -126,10 +123,41 @@ void eae6320::cFinalGameProject::UpdateDialogue()
 	if (story.canRead())
 	{
 		std::string ParseText = story.Read();
+		std::vector<std::string> res;
 
-		CurrentText = story.Read();
-		bool ret = LoadTextureFromFile("data/images/Pic1.jpg", &my_texture, &my_image_width, &my_image_height);
-		IM_ASSERT(ret);
+		char* strc = new char[strlen(ParseText.c_str()) + 1];
+		const char* delim = "-";
+		strcpy(strc, ParseText.c_str());  
+		char* temp = strtok(strc, delim);
+		while (temp != NULL)
+		{
+			res.push_back(std::string(temp));
+			temp = strtok(NULL, delim);
+		}
+		delete[] strc;
+		delete[] temp;
+
+		if (res.size() > 0)
+		{
+			CurrentText = res[0];
+			if (res.size() > 1)
+			{
+				std::string PicFileName = res[1];
+				const std::string FilePath = "data/images/";
+				const std::string FileInformation = FilePath + PicFileName;
+				bool ret = LoadTextureFromFile(FileInformation.c_str(), &my_texture, &my_image_width, &my_image_height);
+				IM_ASSERT(ret);
+			}
+			if (res.size() > 2)
+			{
+				std::string audioOperation = res[2];
+
+				if (audioOperation == "PhoneRingStart")
+					PhoneRingAudio.Play();
+				if (audioOperation == "PhoneRingStop")
+					PhoneRingAudio.PauseAudio();
+			}
+		}
 	}
 	else
 	{
@@ -202,7 +230,7 @@ eae6320::cResult eae6320::cFinalGameProject::Initialize()
 
 	Logging::OutputMessage("FinalGameProject is initialized!");
 
-	myAudio.CreateAudioData("data/audios/Mixdown.wav", "TestAudio", 1000, true);
+	PhoneRingAudio.CreateAudioData("data/audios/PhoneRing.wav", "PhoneRingAudio", 1000, true);
 
 	return result;
 }
@@ -226,7 +254,7 @@ void eae6320::cFinalGameProject::SubmitDataToBeRendered(const float i_elapsedSec
 	Graphics::SubmitCamera(m_camera, i_elapsedSecondCount_sinceLastSimulationUpdate);
 	
 	//myAudio.CreateAudioData("data/audios/Test.mp3", "TestAudio");
-	myAudio.SubmitAudioSource();
+	PhoneRingAudio.SubmitAudioSource();
 	
 
 	//eae6320::AudioSystem::SubmitAudioSource();
