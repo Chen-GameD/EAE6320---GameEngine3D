@@ -27,6 +27,8 @@ namespace
 // Run
 //----
 
+static float timer = 0;
+
 #if defined( EAE6320_PLATFORM_D3D )
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -153,9 +155,23 @@ void eae6320::cFinalGameProject::UpdateDialogue()
 				std::string audioOperation = res[2];
 
 				if (audioOperation == "PhoneRingStart")
+				{
 					PhoneRingAudio.Play();
+					BGMAudio.PauseAudio();
+				}
+					
 				if (audioOperation == "PhoneRingStop")
+				{
 					PhoneRingAudio.PauseAudio();
+					BGMAudio.ResumeAudio();
+				}
+
+				if (audioOperation == "Laugh")
+					LaughAudio.PlayIndependent();
+				if (audioOperation == "HuhDad")
+					HuhDadAudio.PlayIndependent();
+				if (audioOperation == "HuhGirl")
+					HuhGirlAudio.PlayIndependent();
 			}
 		}
 	}
@@ -163,6 +179,9 @@ void eae6320::cFinalGameProject::UpdateDialogue()
 	{
 		MeetChoice = true;
 	}
+
+	isKeyPressed = false;
+	timer = 0;
 }
 
 void eae6320::cFinalGameProject::UpdateBasedOnInput()
@@ -178,6 +197,20 @@ void eae6320::cFinalGameProject::UpdateBasedOnInput()
 
 void eae6320::cFinalGameProject::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
+	if (isGameStart)
+	{
+		if (!isPlayBGM)
+		{
+			isPlayBGM = true;
+			BGMAudio.Play();
+		}
+
+		timer += i_elapsedSecondCount_sinceLastUpdate;
+		if (timer >= 5)
+		{
+			UpdateDialogue();
+		}
+	}
 	m_camera.m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
@@ -185,7 +218,12 @@ void eae6320::cFinalGameProject::UpdateSimulationBasedOnInput()
 {
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space))
 	{
-		UpdateDialogue();
+		if (!isKeyPressed)
+		{
+			isKeyPressed = true;
+			if (isGameStart)
+				UpdateDialogue();
+		}
 	}
 }
 
@@ -230,7 +268,11 @@ eae6320::cResult eae6320::cFinalGameProject::Initialize()
 
 	Logging::OutputMessage("FinalGameProject is initialized!");
 
-	PhoneRingAudio.CreateAudioData("data/audios/PhoneRing.wav", "PhoneRingAudio", 1000, true);
+	BGMAudio.CreateAudioData("data/audios/BGM.mp3", "BGMAudio", 800, true);
+	PhoneRingAudio.CreateAudioData("data/audios/phonering.wav", "PhoneRingAudio", 1000, true);
+	LaughAudio.CreateAudioData("data/audios/laugh.wav", "LaughAudio", 1000, false);
+	HuhDadAudio.CreateAudioData("data/audios/HuhDad.wav", "HuhDadAudio", 1000, false);
+	HuhGirlAudio.CreateAudioData("data/audios/HuhGirl.wav", "HuhGirlAudio", 1000, false);
 
 	return result;
 }
@@ -254,7 +296,12 @@ void eae6320::cFinalGameProject::SubmitDataToBeRendered(const float i_elapsedSec
 	Graphics::SubmitCamera(m_camera, i_elapsedSecondCount_sinceLastSimulationUpdate);
 	
 	//myAudio.CreateAudioData("data/audios/Test.mp3", "TestAudio");
+	BGMAudio.SubmitAudioSource();
+	LaughAudio.SubmitAudioSource();
 	PhoneRingAudio.SubmitAudioSource();
+	HuhDadAudio.SubmitAudioSource();
+	HuhGirlAudio.SubmitAudioSource();
+	//LaughAudio.SubmitAudioSource();
 	
 
 	//eae6320::AudioSystem::SubmitAudioSource();
@@ -269,6 +316,15 @@ void eae6320::cFinalGameProject::RenderUI()
 
 	{
 		ImGui::Begin("Test");
+
+		if (!isGameStart)
+		{
+			if (ImGui::Button("Start Game"))
+			{
+				isGameStart = true;
+				UpdateDialogue();
+			}
+		}
 
 #if defined( EAE6320_PLATFORM_D3D )
 		ImGui::Image((void*)my_texture, ImVec2(float(my_image_width), float(my_image_height)));

@@ -23,10 +23,11 @@ return
 	},
 	audios =
 	{
-		{ path = "Audios/Mixdown.mp3"},
-		{ path = "Audios/Mixdown.wav"},
-		{ path = "Audios/Test.mp3"},
 		{ path = "Audios/PhoneRing.wav"},
+		{ path = "Audios/Laugh.wav"},
+		{ path = "Audios/HuhGirl.wav"},
+		{ path = "Audios/HuhDad.wav"},
+		{ path = "Audios/BGM.mp3"},
 	},
 	stories =
 	{

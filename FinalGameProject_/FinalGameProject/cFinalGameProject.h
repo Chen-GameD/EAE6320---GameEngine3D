@@ -121,8 +121,15 @@ namespace eae6320
 		int my_image_width = 0;
 		int my_image_height = 0;
 		ImFont* MyFont;
+		bool isGameStart = false;
+		bool isKeyPressed = false;
+		bool isPlayBGM = false;
 
+		eae6320::AudioSystem::cAudio BGMAudio;
 		eae6320::AudioSystem::cAudio PhoneRingAudio;
+		eae6320::AudioSystem::cAudio LaughAudio;
+		eae6320::AudioSystem::cAudio HuhGirlAudio;
+		eae6320::AudioSystem::cAudio HuhDadAudio;
 	};
 }
 
