@@ -9,6 +9,7 @@
 #include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Graphics/cMesh.h>
 #include <Engine/Graphics/cEffect.h>
+#include <Engine/Audio/AudioSystem.h>
 
 // Static Data
 //============
@@ -18,8 +19,8 @@ namespace
 	//static game object data
 	eae6320::GameObjectData* m_gameObjectData_submit = nullptr;
 	size_t m_numOfGameObject_submit = 0;
-	eae6320::GameObjectData* m_gameObjectData_1 = new eae6320::GameObjectData[2];
-	eae6320::GameObjectData* m_gameObjectData_2 = new eae6320::GameObjectData[2];
+	eae6320::GameObjectData* m_gameObjectData_1 = new eae6320::GameObjectData[3];
+	eae6320::GameObjectData* m_gameObjectData_2 = new eae6320::GameObjectData[3];
 
 	//static camera
 	eae6320::Camera m_camera;
@@ -30,6 +31,8 @@ namespace
 
 // Run
 //----
+
+eae6320::AudioSystem::cAudio myAudio;
 
 void eae6320::cMyGame::UpdateBasedOnInput()
 {
@@ -47,8 +50,10 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 	m_camera.m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
 	m_gameObjectData_1[0].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
 	m_gameObjectData_1[1].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
+	m_gameObjectData_1[2].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
 	m_gameObjectData_2[0].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
 	m_gameObjectData_2[1].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
+	m_gameObjectData_2[2].m_RigidBodyState.Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnInput()
@@ -86,6 +91,47 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 		m_gameObjectData_2[0].m_RigidBodyState.velocity = Math::sVector(0, 0, 0);
 	}
 
+	// Test
+	if (UserInput::IsKeyPressed('T'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.IsPlaying();
+		//eae6320::AudioSystem::Play(1);
+		myAudio.PlayIndependent();
+	}
+
+	if (UserInput::IsKeyPressed('P'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.PauseAudio();
+		myAudio.PauseAudio();
+	}
+
+	if (UserInput::IsKeyPressed('R'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.PauseAudio();
+		myAudio.ResumeAudio();
+	}
+
+	if (UserInput::IsKeyPressed('O'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.SubmitAudioSource();
+		//myAudio.Play(1);
+		//eae6320::AudioSystem::Play(1);
+		myAudio.Play();
+	}
+
+	if (UserInput::IsKeyPressed('I'))
+	{
+		//eae6320::AudioSystem::PauseAudio();
+		//myAudio.SubmitAudioSource();
+		//myAudio.Play(2);
+		//eae6320::AudioSystem::Play(2);
+		myAudio.SetVolume(100);
+	}
+
 
 	// Is the user pressing the Space key?
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space))
@@ -94,12 +140,12 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 		if (m_gameObjectData_submit == m_gameObjectData_1)
 		{
 			m_gameObjectData_submit = m_gameObjectData_2;
-			m_numOfGameObject_submit = 2;
+			m_numOfGameObject_submit = 3;
 		}
 		else
 		{
 			m_gameObjectData_submit = m_gameObjectData_1;
-			m_numOfGameObject_submit = 2;
+			m_numOfGameObject_submit = 3;
 		}
 	}
 
@@ -109,7 +155,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	}
 	else
 	{
-		m_numOfGameObject_submit = 2;
+		m_numOfGameObject_submit = 3;
 	}
 
 	// Camera movement
@@ -157,11 +203,6 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	{
 		const char* vertexShaderAddress_1 = "data/Shaders/Vertex/standard.shader";
 		const char* fragmentShaderAddress_1 = "data/Shaders/Fragment/myShader_1.shader";
-		/*if (!(result = s_effect_1.InitializeShadingData(vertexShaderAddress_1, fragmentShaderAddress_1)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}*/
 		if (!(result = eae6320::Graphics::cEffect::CreateEffect(m_gameObjectData_1[0].m_Effect, vertexShaderAddress_1, fragmentShaderAddress_1)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
@@ -170,12 +211,15 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 		const char* vertexShaderAddress_2 = "data/Shaders/Vertex/standard.shader";
 		const char* fragmentShaderAddress_2 = "data/Shaders/Fragment/myShader_2.shader";
-		/*if (!(result = s_effect_2.InitializeShadingData(vertexShaderAddress_2, fragmentShaderAddress_2)))
+		if (!(result = eae6320::Graphics::cEffect::CreateEffect(m_gameObjectData_1[1].m_Effect, vertexShaderAddress_2, fragmentShaderAddress_2)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
-		}*/
-		if (!(result = eae6320::Graphics::cEffect::CreateEffect(m_gameObjectData_1[1].m_Effect, vertexShaderAddress_2, fragmentShaderAddress_2)))
+		}
+
+		const char* vertexShaderAddress_5 = "data/Shaders/Vertex/standard.shader";
+		const char* fragmentShaderAddress_5 = "data/Shaders/Fragment/myShader_2.shader";
+		if (!(result = eae6320::Graphics::cEffect::CreateEffect(m_gameObjectData_1[2].m_Effect, vertexShaderAddress_5, fragmentShaderAddress_5)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
@@ -183,11 +227,6 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 		const char* vertexShaderAddress_3 = "data/Shaders/Vertex/standard.shader";
 		const char* fragmentShaderAddress_3 = "data/Shaders/Fragment/myShader_3.shader";
-		/*if (!(result = s_effect_1.InitializeShadingData(vertexShaderAddress_1, fragmentShaderAddress_1)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}*/
 		if (!(result = eae6320::Graphics::cEffect::CreateEffect(m_gameObjectData_2[0].m_Effect, vertexShaderAddress_3, fragmentShaderAddress_3)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
@@ -196,12 +235,15 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 		const char* vertexShaderAddress_4 = "data/Shaders/Vertex/standard.shader";
 		const char* fragmentShaderAddress_4 = "data/Shaders/Fragment/myShader_4.shader";
-		/*if (!(result = s_effect_2.InitializeShadingData(vertexShaderAddress_2, fragmentShaderAddress_2)))
+		if (!(result = eae6320::Graphics::cEffect::CreateEffect(m_gameObjectData_2[1].m_Effect, vertexShaderAddress_4, fragmentShaderAddress_4)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
-		}*/
-		if (!(result = eae6320::Graphics::cEffect::CreateEffect(m_gameObjectData_2[1].m_Effect, vertexShaderAddress_4, fragmentShaderAddress_4)))
+		}
+
+		const char* vertexShaderAddress_6 = "data/Shaders/Vertex/standard.shader";
+		const char* fragmentShaderAddress_6 = "data/Shaders/Fragment/myShader_4.shader";
+		if (!(result = eae6320::Graphics::cEffect::CreateEffect(m_gameObjectData_2[2].m_Effect, vertexShaderAddress_6, fragmentShaderAddress_6)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
@@ -210,141 +252,32 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	// Initialize the geometry
 	{
-		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_1[4];
-		{
-			// OpenGL is right-handed
-
-			vertexData_1[0].x = 0.0f;
-			vertexData_1[0].y = 0.0f;
-			vertexData_1[0].z = 0.0f;
-
-			vertexData_1[1].x = 1.0f;
-			vertexData_1[1].y = 0.0f;
-			vertexData_1[1].z = 0.0f;
-
-			vertexData_1[2].x = 1.0f;
-			vertexData_1[2].y = 1.0f;
-			vertexData_1[2].z = 0.0f;
-
-			vertexData_1[3].x = 0.0f;
-			vertexData_1[3].y = 1.0f;
-			vertexData_1[3].z = 0.0f;
-		}
-
-		uint16_t indexArray_1[6] = { 0,1,2,0,2,3 };
-
-		if (!(result = eae6320::Graphics::cMesh::CreateMesh(m_gameObjectData_1[0].m_Mesh, vertexData_1, indexArray_1, 4, 6)))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_1[0].m_Mesh, "data/meshes/Mesh_1.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_2[7];
-		{
-			// OpenGL is right-handed
-
-			vertexData_2[0].x = 0.0f;
-			vertexData_2[0].y = 0.0f;
-			vertexData_2[0].z = 0.0f;
-
-			vertexData_2[1].x = 0.0f;
-			vertexData_2[1].y = 1.0f;
-			vertexData_2[1].z = 0.0f;
-
-			vertexData_2[2].x = -1.0f;
-			vertexData_2[2].y = 1.0f;
-			vertexData_2[2].z = 0.0f;
-
-			vertexData_2[3].x = -1.0f;
-			vertexData_2[3].y = 0.0f;
-			vertexData_2[3].z = 0.0f;
-
-			vertexData_2[4].x = 0.0f;
-			vertexData_2[4].y = -1.0f;
-			vertexData_2[4].z = 0.0f;
-
-			vertexData_2[5].x = 1.0f;
-			vertexData_2[5].y = -1.0f;
-			vertexData_2[5].z = 0.0f;
-
-			vertexData_2[6].x = 1.0f;
-			vertexData_2[6].y = 0.0f;
-			vertexData_2[6].z = 0.0f;
-		}
-
-		uint16_t indexArray_2[15] = { 0,1,2,0,2,3,0,3,4,0,4,5,0,5,6 };
-
-		if (!(result = eae6320::Graphics::cMesh::CreateMesh(m_gameObjectData_1[1].m_Mesh, vertexData_2, indexArray_2, 7, 15)))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_1[1].m_Mesh, "data/meshes/Mesh_2.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_3[4];
-		{
-			// OpenGL is right-handed
-
-			vertexData_3[0].x = 0.0f;
-			vertexData_3[0].y = 0.0f;
-			vertexData_3[0].z = 0.0f;
-
-			vertexData_3[1].x = 1.0f;
-			vertexData_3[1].y = 0.0f;
-			vertexData_3[1].z = 0.0f;
-
-			vertexData_3[2].x = 1.0f;
-			vertexData_3[2].y = 1.0f;
-			vertexData_3[2].z = 0.0f;
-
-			vertexData_3[3].x = 0.0f;
-			vertexData_3[3].y = 1.0f;
-			vertexData_3[3].z = 0.0f;
-		}
-
-		uint16_t indexArray_3[6] = { 0,1,2,0,2,3 };
-
-		if (!(result = eae6320::Graphics::cMesh::CreateMesh(m_gameObjectData_2[0].m_Mesh, vertexData_3, indexArray_3, 4, 6)))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_1[2].m_Mesh, "data/meshes/Mesh_3.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		//Data input is temporarily hardcoded...
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_4[7];
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_2[0].m_Mesh, "data/meshes/Mesh_1.lua")))
 		{
-			// OpenGL is right-handed
-
-			vertexData_4[0].x = 0.0f;
-			vertexData_4[0].y = 0.0f;
-			vertexData_4[0].z = 0.0f;
-
-			vertexData_4[1].x = 0.0f;
-			vertexData_4[1].y = 1.0f;
-			vertexData_4[1].z = 0.0f;
-
-			vertexData_4[2].x = -1.0f;
-			vertexData_4[2].y = 1.0f;
-			vertexData_4[2].z = 0.0f;
-
-			vertexData_4[3].x = -1.0f;
-			vertexData_4[3].y = 0.0f;
-			vertexData_4[3].z = 0.0f;
-
-			vertexData_4[4].x = 0.0f;
-			vertexData_4[4].y = -1.0f;
-			vertexData_4[4].z = 0.0f;
-
-			vertexData_4[5].x = 1.0f;
-			vertexData_4[5].y = -1.0f;
-			vertexData_4[5].z = 0.0f;
-
-			vertexData_4[6].x = 1.0f;
-			vertexData_4[6].y = 0.0f;
-			vertexData_4[6].z = 0.0f;
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
 
-		uint16_t indexArray_4[15] = { 0,1,2,0,2,3,0,3,4,0,4,5,0,5,6 };
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_2[1].m_Mesh, "data/meshes/Mesh_2.lua")))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+		}
 
-		if (!(result = eae6320::Graphics::cMesh::CreateMesh(m_gameObjectData_2[1].m_Mesh, vertexData_4, indexArray_4, 7, 15)))
+		if (!(result = eae6320::Graphics::cMesh::CreateMeshWithBinaryFile(m_gameObjectData_2[2].m_Mesh, "data/meshes/Mesh_3.lua")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 		}
@@ -357,10 +290,27 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		m_camera.m_RigidBodyState.position.z = 10;
 	}
 
+	// Initialize the Object
+	{
+		m_gameObjectData_1[1].m_RigidBodyState.position = Math::sVector(0, -1, 0);
+		m_gameObjectData_2[1].m_RigidBodyState.position = Math::sVector(0, -1, 0);
+
+		m_gameObjectData_1[2].m_RigidBodyState.position = Math::sVector(-1, 1, 0);
+		m_gameObjectData_2[2].m_RigidBodyState.position = Math::sVector(-1, 1, 0);
+	}
+
 	m_gameObjectData_submit = m_gameObjectData_1;
-	m_numOfGameObject_submit = 2;
+	m_numOfGameObject_submit = 3;
 
 	Logging::OutputMessage("MyGame is initialized!");
+
+	//eae6320::AudioSystem::SubmitAudioToPlay();
+	//myAudio.SubmitAudioToPlay();
+
+	//myAudio.PauseAudio();
+	//myAudio.SubmitAudioSource();
+
+	myAudio.CreateAudioData("data/audios/Mixdown.wav", "TestAudio", 1000, true);
 
 	return result;
 }
@@ -368,7 +318,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 eae6320::cResult eae6320::cMyGame::CleanUp()
 {
 	Logging::OutputMessage("MyGame is cleaned up!");
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		if (m_gameObjectData_1[i].m_Mesh)
 		{
@@ -382,7 +332,7 @@ eae6320::cResult eae6320::cMyGame::CleanUp()
 		}
 	}
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		if (m_gameObjectData_2[i].m_Mesh)
 		{
@@ -409,4 +359,10 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 
 	// Submit camera
 	Graphics::SubmitCamera(m_camera, i_elapsedSecondCount_sinceLastSimulationUpdate);
+	
+	//myAudio.CreateAudioData("data/audios/Test.mp3", "TestAudio");
+	myAudio.SubmitAudioSource();
+	
+
+	//eae6320::AudioSystem::SubmitAudioSource();
 }

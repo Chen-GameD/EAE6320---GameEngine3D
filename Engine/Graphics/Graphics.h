@@ -9,11 +9,14 @@
 //=========
 
 #include "Configuration.h"
+#include "InitializationParameters.h"
 
 #include <cstdint>
 #include <Engine/Results/Results.h>
 #include <Engine/Physics/sRigidBodyState.h>
 #include <Engine/Math/Functions.h>
+
+#include <functional>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
@@ -83,6 +86,9 @@ namespace eae6320
 
 	namespace Graphics
 	{
+
+		void RegisterOnImGuiRenderUI(const std::function<void()>& i_OnRenderImGuiRenderUI);
+
 		// Submission
 		//-----------
 
@@ -129,7 +135,7 @@ namespace eae6320
 		// Initialize / Clean Up
 		//----------------------
 
-		struct sInitializationParameters
+		/*struct sInitializationParameters
 		{
 #if defined( EAE6320_PLATFORM_WINDOWS )
 			HWND mainWindow = NULL;
@@ -139,7 +145,7 @@ namespace eae6320
 			HINSTANCE thisInstanceOfTheApplication = NULL;
 	#endif
 #endif
-		};
+		};*/
 
 		cResult Initialize( const sInitializationParameters& i_initializationParameters );
 		cResult CleanUp();

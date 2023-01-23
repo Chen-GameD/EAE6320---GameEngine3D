@@ -57,6 +57,13 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="cMesh.cpp" />
     <ClCompile Include="cEffect.cpp" />
+    <ClCompile Include="DearImGui.cpp" />
+    <ClCompile Include="Direct3D\DearImGui.d3d.cpp">
+      <Filter>Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\DearImGui.gl.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cConstantBuffer.h" />
@@ -80,6 +87,8 @@
     <ClInclude Include="cMesh.h" />
     <ClInclude Include="cEffect.h" />
     <ClInclude Include="cView.h" />
+    <ClInclude Include="DearImGui.h" />
+    <ClInclude Include="InitializationParameters.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cRenderState.inl" />

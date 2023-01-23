@@ -15,4 +15,16 @@ return
 		{ path = "Shaders/Fragment/myShader_3.shader", arguments = { "fragment" } },
 		{ path = "Shaders/Fragment/myShader_4.shader", arguments = { "fragment" } },
 	},
+	meshes =
+	{
+		{ path = "Meshes/Mesh_1.lua"},
+		{ path = "Meshes/Mesh_2.lua"},
+		{ path = "Meshes/Mesh_3.lua"},
+	},
+	audios =
+	{
+		{ path = "Audios/Mixdown.mp3"},
+		{ path = "Audios/Mixdown.wav"},
+		{ path = "Audios/Test.mp3"},
+	},
 }

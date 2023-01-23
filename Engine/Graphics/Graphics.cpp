@@ -14,11 +14,16 @@
 #include "cMesh.h"
 #include "cEffect.h"
 
+#include "DearImGui.h"
+
 // Static Data
 //============
 
 namespace
 {
+
+	std::function<void()> OnImGuiRenderUI = nullptr;
+
 	// Static View
 	eae6320::Graphics::cView s_view;
 
@@ -56,6 +61,11 @@ namespace
 
 // Interface
 //==========
+
+void eae6320::Graphics::RegisterOnImGuiRenderUI(const std::function<void()>& i_OnRenderImGuiRenderUI)
+{
+	OnImGuiRenderUI = i_OnRenderImGuiRenderUI;
+}
 
 // Submission
 //-----------
@@ -153,6 +163,14 @@ void eae6320::Graphics::RenderFrame()
 		}
 	}
 
+	eae6320::Graphics::DearImGui::CreateImGuiFrame();
+	//eae6320::Graphics::DearImGui::RenderImGuiUI();
+	if (OnImGuiRenderUI != nullptr)
+	{
+		OnImGuiRenderUI();
+	}
+	eae6320::Graphics::DearImGui::RenderImGuiFrame();
+
 	// Every frame an entirely new image will be created.
 	// Before drawing anything, then, the previous image will be erased
 	// by "clearing" the image buffer (filling it with a solid color)
@@ -175,6 +193,8 @@ void eae6320::Graphics::RenderFrame()
 		// Draw the geometry
 		s_dataBeingRenderedByRenderThread->gameObjectArray[i]->m_Mesh->DrawGeometry();
 	}
+
+	eae6320::Graphics::DearImGui::RenderImGui_DrawData();
 
 	// Everything has been drawn to the "back buffer", which is just an image in memory.
 	// In order to display it the contents of the back buffer must be "presented"
@@ -258,6 +278,15 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 		if (!(result = s_view.InitializeViews(i_initializationParameters)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the views");
+			return result;
+		}
+	}
+
+	// Initialize the Dear ImGui
+	{
+		if (!(result = eae6320::Graphics::DearImGui::InitializeImGui(i_initializationParameters)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize ImGui");
 			return result;
 		}
 	}
